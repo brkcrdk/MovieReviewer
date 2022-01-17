@@ -1,7 +1,10 @@
 import { createClient } from "@supabase/supabase-js";
-import { SUPABASE_KEY, SUPABASE_REST_URL } from "../project.config";
+// import { SUPABASE_KEY, SUPABASE_REST_URL } from "../project.config";
 
-const client = createClient(SUPABASE_REST_URL, SUPABASE_KEY, {
+const REST_URL = process.env.NEXT_PUBLIC_SUPABASE_REST_URL;
+const KEY = process.env.NEXT_PUBLIC_SUPABASE_KEY;
+console.log(REST_URL, KEY);
+const client = createClient(REST_URL, KEY, {
   autoRefreshToken: true,
 });
 
