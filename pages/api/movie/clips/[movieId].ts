@@ -14,5 +14,6 @@ export default async function SendMovie(req, res) {
   const { movieId } = req.query;
   const prom = await fetch(getMovie(movieId));
   const { results: data } = await prom.json();
-  res.status(200).send(data.at(-2));
+
+  res.status(200).send(data[0] || null);
 }

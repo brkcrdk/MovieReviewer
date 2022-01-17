@@ -7,3 +7,4 @@ export * from "./Container/Container";
 export * from "./Modal/Modal";
 export * from "./Auth/Logout/Logout";
 export * from "./BiggestTitle/BiggestTitle";
+export * as LinkToId from "./Link/Link";

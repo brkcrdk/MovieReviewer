@@ -3,7 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 
 const REST_URL = process.env.NEXT_PUBLIC_SUPABASE_REST_URL;
 const KEY = process.env.NEXT_PUBLIC_SUPABASE_KEY;
-console.log(REST_URL, KEY);
+
 const client = createClient(REST_URL, KEY, {
   autoRefreshToken: true,
 });

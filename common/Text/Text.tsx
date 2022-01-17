@@ -1,5 +1,5 @@
 import Styles from "./Text.module.css";
 
-export function Text({ children }) {
-  return <span className={Styles.text}>{children}</span>;
+export function Text({ children, className = "" }) {
+  return <span className={`${Styles.text} ${className}`}>{children}</span>;
 }

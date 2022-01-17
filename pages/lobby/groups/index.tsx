@@ -38,14 +38,6 @@ export default function Lobby() {
     return { data, error };
   }
 
-  async function createGroup({ groupName: name }) {
-    const user = client.auth.user();
-    await client
-      .from("groups")
-      .insert([{ name, icon: "tesing", owner_id: user.id }]);
-    await updateGroups();
-  }
-
   async function updateGroups() {
     const { data, error } = await getGroups();
     error
@@ -55,29 +47,14 @@ export default function Lobby() {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  function toggleOpen() {
-    setIsOpen(!isOpen);
-  }
+  // const validation = Val.object().shape({
+  //   groupName: Val.string()
+  //     .required()
+  //     .min(3, "Can't be shorter than 3 characters!")
+  //     .max(20, "Can't be longer than 20 characters!"),
+  // });
 
-  const validation = Val.object().shape({
-    groupName: Val.string()
-      .required()
-      .min(3, "Can't be shorter than 3 characters!")
-      .max(20, "Can't be longer than 20 characters!"),
-  });
-
-  const formik = useFormik({
-    initialValues: {
-      groupName: "",
-      groupIcon: "",
-    },
-    validationSchema: validation,
-    onSubmit: (values) => {
-      console.log(values);
-      // createGroup(values);
-      toggleOpen();
-    },
-  });
+  const toggleOpen = () => setIsOpen(!isOpen);
 
   return (
     <>
@@ -93,7 +70,11 @@ export default function Lobby() {
           ))}
         </Container>
       </LobbyLayout>
-      <ModalComp isOpen={isOpen} formik={formik} toggleOpen={toggleOpen} />
+      <ModalComponent
+        isOpen={isOpen}
+        toggleOpen={toggleOpen}
+        update={updateGroups}
+      />
     </>
   );
 }
@@ -115,60 +96,63 @@ function HeaderButtons({ updateGroups, toggleOpen }) {
   );
 }
 
-function ModalComp({ isOpen, toggleOpen, formik }) {
+function ModalComponent({ isOpen, toggleOpen, update }) {
+  const client = useClient();
+
+  async function createGroup(event) {
+    event.preventDefault();
+    const [{ value: groupName }] = event.target;
+    const user = client.auth.user();
+    await client
+      .from("groups")
+      .insert([{ name: groupName, icon: "tesing", owner_id: user.id }]);
+    await update();
+    toggleOpen();
+  }
+
   return (
     <Modal isOpen={isOpen}>
       <SmallTitle>Add a group</SmallTitle>
-      <FormContent formik={formik} toggleOpen={toggleOpen} />
+      <form className={Styles["form"]} onSubmit={createGroup}>
+        <TextField
+          className={Styles["input--groupname"]}
+          label="Group Name"
+          name="groupName"
+          variant="filled"
+        />
+
+        <input
+          accept="image/*"
+          className={Styles.input}
+          style={{ display: "none" }}
+          id="raised-button-file"
+          multiple
+          type="file"
+          name="input"
+        />
+        <label htmlFor="raised-button-file">
+          <Button variant="text" component="span" className={Styles.button}>
+            Upload
+          </Button>
+        </label>
+        <div className={Styles["btn-container"]}>
+          <Button size="medium" onClick={() => toggleOpen()}>
+            close
+          </Button>
+
+          <Button size="large" variant="contained" type="submit">
+            Create Group
+          </Button>
+        </div>
+      </form>
     </Modal>
   );
 }
 
-function FormContent({ formik, toggleOpen }) {
-  return (
-    <form onSubmit={formik.handleSubmit} className={Styles["form"]}>
-      <TextField
-        className={Styles["input--groupname"]}
-        label="Group Name"
-        name="groupName"
-        onChange={formik.handleChange}
-        variant="filled"
-        value={formik.values.groupName}
-      />
-      {formik.errors.groupName ? (
+{
+  /* {formik.errors.groupName ? (
         <div className={Styles["error-msg"]}>
-          <SmallText>{formik.errors.groupName}</SmallText>
+          <SmallText></SmallText>
         </div>
-      ) : null}
-      <input
-        accept="image/*"
-        className={Styles.input}
-        style={{ display: "none" }}
-        id="raised-button-file"
-        multiple
-        type="file"
-        onChange={formik.handleChange}
-        value={formik.values.groupIcon}
-      />
-      <label htmlFor="raised-button-file">
-        <Button variant="text" component="span" className={Styles.button}>
-          Upload
-        </Button>
-      </label>
-      <div className={Styles["btn-container"]}>
-        <Button size="medium" onClick={() => toggleOpen()}>
-          close
-        </Button>
-
-        <Button
-          size="large"
-          variant="contained"
-          onClick={formik.submitForm}
-          disabled={!formik.isValid}
-        >
-          Create Group
-        </Button>
-      </div>
-    </form>
-  );
+      ) : null} */
 }

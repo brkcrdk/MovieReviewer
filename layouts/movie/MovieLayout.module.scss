@@ -1,0 +1,83 @@
+// .wrapper {
+//   /* padding-block: 2rem 3rem; */
+//   /* max-width: 1400px; */
+//   margin: 0 auto;
+
+//   display: grid;
+//   /* align-items: center; */
+//   grid-template-rows: 1fr;
+//   gap: 2.5rem;
+//   min-height: 100vh;
+// }
+
+// .wrapper > * {
+//   width: 100%;
+// }
+
+// .navbarContainer {
+//   display: flex;
+//   gap: 2rem;
+//   flex-direction: column;
+// }
+
+// .header-container {
+//   padding-inline: 2rem;
+
+//   width: 100%;
+//   display: grid;
+//   /* justify-content: space-between; */
+//   align-items: center;
+//   gap: 1rem;
+//   grid-template-columns: auto 1fr auto;
+//   position: fixed;
+// }
+
+// .btn-container {
+//   display: flex;
+//   gap: 0.5rem;
+//   justify-content: space-between;
+// }
+
+// .rightContainer {
+//   display: flex;
+//   gap: 1rem;
+//   justify-content: space-between;
+// }
+
+// .middle {
+//   width: 100%;
+//   display: flex;
+//   justify-content: center;
+// }
+
+.leftContainer {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  padding: 3rem;
+  background-color: var(--sec-clr);
+}
+
+.layout {
+  display: grid;
+  text-align: center;
+  text-align: left;
+  margin-top: 7rem;
+  justify-content: flex-end;
+  margin-left: calc(300px + 3rem + 3rem);
+  width: calc(100% - 300px - 3rem - 3rem);
+}
+.btnContainer {
+  display: grid;
+  grid-template-rows: auto auto auto;
+  text-align: left;
+  justify-content: flex-start;
+  padding: 1rem;
+  width: 100%;
+  font-size: 1.25rem;
+}

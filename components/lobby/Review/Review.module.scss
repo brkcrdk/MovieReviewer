@@ -1,0 +1,20 @@
+.paperContainer {
+  --padding: 1.5rem;
+  padding: var(--padding);
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding);
+}
+
+.paperHeader {
+  display: flex;
+  gap: var(--padding);
+  align-items: center;
+}
+
+.ratingContainer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: auto;
+}
