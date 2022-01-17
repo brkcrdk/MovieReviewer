@@ -1,4 +1,4 @@
-import "../styles/globals.css";
+import "Styles/globals.scss";
 import { ThemeProvider } from "@mui/material";
 import { darkTheme } from "themes/dark";
 

@@ -1,5 +1,4 @@
 import { createClient } from "@supabase/supabase-js";
-// import { SUPABASE_KEY, SUPABASE_REST_URL } from "../project.config";
 
 const REST_URL = process.env.NEXT_PUBLIC_SUPABASE_REST_URL;
 const KEY = process.env.NEXT_PUBLIC_SUPABASE_KEY;
@@ -9,6 +8,10 @@ const client = createClient(REST_URL, KEY, {
 });
 
 export function useClient() {
+  return client;
+}
+
+export function getClient() {
   return client;
 }
 

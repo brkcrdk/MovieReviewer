@@ -1,7 +1,9 @@
 import { createClient } from "@supabase/supabase-js";
-import { SUPABASE_KEY, SUPABASE_REST_URL } from "../../../project.config";
+
+const REST_URL = process.env.NEXT_PUBLIC_SUPABASE_REST_URL;
+const KEY = process.env.NEXT_PUBLIC_SUPABASE_KEY;
 
 export default function handler(req, res) {
-  const client = createClient(SUPABASE_REST_URL, SUPABASE_KEY);
+  const client = createClient(REST_URL, KEY);
   return res.status(200).json(client.auth.api.getUserByCookie(req));
 }

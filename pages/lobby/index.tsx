@@ -6,6 +6,6 @@ export default function Redirect() {
 
   useEffect(() => {
     router.replace("lobby/groups");
-  }, []);
+  }, [router]);
   return null;
 }

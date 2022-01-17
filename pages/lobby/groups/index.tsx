@@ -1,4 +1,3 @@
-import Navbar from "Components/lobby/Navbar/Navbar";
 import LobbyLayout from "Layouts/lobby/LobbyLayout";
 import { BigTitle, SmallText, SmallTitle } from "common";
 import { useClient } from "Hooks/supabase";
@@ -14,6 +13,12 @@ import ReplayIcon from "@mui/icons-material/Replay";
 
 import * as Val from "yup";
 
+export function getServerSideProps() {
+  return {
+    props: {}, // will be passed to the page component as props
+  };
+}
+
 export default function Lobby() {
   const client = useClient();
   const [groups, setGroups] = useState([]);
@@ -22,10 +27,21 @@ export default function Lobby() {
     if (!client.auth.user()) {
       client.auth.signIn({ provider: "google" });
     }
+
+    async function getGroups() {
+      const user = client.auth.user();
+      const { data, error } = await client
+        .from("groups")
+        .select()
+        .filter("owner_id", "like", user.id)
+        .order("created_at", { ascending: false });
+      if (error) console.log(error);
+      return { data, error };
+    }
     getGroups().then(({ data }) => {
       setGroups(data);
     });
-  }, [client.auth]);
+  }, [client]);
 
   async function getGroups() {
     const user = client.auth.user();

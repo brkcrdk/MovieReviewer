@@ -74,6 +74,11 @@
   // }
 }
 
+.isMobile {
+  display: flex;
+  justify-content: space-between;
+}
+
 // .reviewContainer {
 //   gap: 1.5rem;
 //   display: flex;

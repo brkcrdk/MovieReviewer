@@ -7,11 +7,19 @@
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
-  min-height: 150vh;
+  @media screen and (max-width: 600px) {
+    padding-inline: 2rem;
+    padding-block: 1rem 1.5rem;
+  }
+  @media screen and (max-width: 500px) {
+    padding-inline: 1rem;
+  }
 }
 
-// .wrapper > * {
-//   width: 100%;
+// @media screen and (max-width: 500px) {
+//   .avatar {
+//     display: none;
+//   }
 // }
 
 .navbarContainer {
@@ -41,7 +49,11 @@
   gap: 1rem;
   justify-content: space-between;
 }
-
+@media screen and (max-width: 800px) {
+  .avatar {
+    display: none;
+  }
+}
 .middle {
   width: 100%;
   display: flex;

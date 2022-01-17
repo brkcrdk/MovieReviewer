@@ -21,7 +21,7 @@ export default function Home() {
         router.push("/lobby/groups");
       }
     });
-  }, []);
+  }, [router, client.auth]);
 
   return <Button onClick={signIn}>Sign in</Button>;
 }

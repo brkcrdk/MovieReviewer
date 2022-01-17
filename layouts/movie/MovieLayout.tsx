@@ -23,23 +23,25 @@ export default function Layout({
     <LobbyLayout title={title} buttons={buttons} middle={middle}>
       <Container className={Styles.layout}>
         <Container className={Styles.leftContainer}>
-          <Image
-            className={Styles.image}
-            src={image}
-            width={300}
-            height={450}
-            alt=""
-            layout={"fixed"}
-          />
-          <Paper className={Styles.btnContainer}>
-            {image || haveReviews ? (
-              <Link href="#header">Go to header</Link>
-            ) : null}
-            {image ? <Link href="#video">Go to Video</Link> : null}
-            {haveReviews ? <Link href="#reviews">Go to reviews</Link> : null}
-          </Paper>
+          <Container className={Styles.move}>
+            <Image
+              className={Styles.image}
+              src={image}
+              width={300}
+              height={450}
+              alt=""
+              layout={"fixed"}
+            />
+            <Paper className={Styles.btnContainer}>
+              {image || haveReviews ? (
+                <Link href="#header">Go to header</Link>
+              ) : null}
+              {image ? <Link href="#video">Go to Video</Link> : null}
+              {haveReviews ? <Link href="#reviews">Go to reviews</Link> : null}
+            </Paper>
+          </Container>
         </Container>
-        <Container className={Styles.content}>{children}</Container>
+        <Container className={Styles.left}>{children}</Container>
       </Container>
     </LobbyLayout>
   );

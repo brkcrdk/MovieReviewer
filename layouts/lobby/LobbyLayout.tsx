@@ -1,6 +1,6 @@
 import Styles from "./LobbyLayout.module.scss";
 import { BigTitle, Container } from "common";
-import { Button } from "@mui/material";
+import { Button, StyledEngineProvider } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useClient } from "Hooks/supabase";
@@ -55,7 +55,7 @@ export default function Layout({
           {user ? (
             <>
               <Button onClick={signOut}>Sign out</Button>
-              <UserAvatar user={user} />
+              <UserAvatar user={user} className={Styles.avatar} />
             </>
           ) : null}
         </Container>
@@ -65,10 +65,16 @@ export default function Layout({
   );
 }
 
-function UserAvatar({ user }) {
+function UserAvatar({ user, className = "" }) {
   function getAvatarFromUser() {
     return user.user_metadata.avatar_url;
   }
 
-  return <Avatar src={getAvatarFromUser()} sx={{ width: 50, height: 50 }} />;
+  return (
+    <Avatar
+      src={getAvatarFromUser()}
+      sx={{ width: 50, height: 50 }}
+      className={className}
+    />
+  );
 }
