@@ -1,0 +1,54 @@
+/* .card {
+  max-width: 250px;
+  max-height: 200px;
+} */
+
+.card {
+  width: 100%;
+  height: 100%;
+}
+
+.btn {
+  display: grid;
+  grid-template-rows: 70% 1fr;
+  background-color: transparent;
+  outline: none;
+  border: none;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  color: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: transparent;
+}
+
+.image {
+  /* width: 100%; */
+  /* max-height: 50%; */
+  /* margin-block: -1rem; */
+  position: relative;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 50%;
+}
+
+.card--container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card--container button {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.card--container h1 {
+  text-align: left;
+}

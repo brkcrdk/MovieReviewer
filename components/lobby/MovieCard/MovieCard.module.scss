@@ -1,0 +1,45 @@
+.card {
+  --padding: 1.5rem;
+  min-height: 350px;
+}
+.card--container {
+  display: flex;
+  flex-direction: column;
+  padding: var(--padding);
+  position: relative;
+  height: auto;
+  gap: 1rem;
+  width: 100%;
+}
+
+.card-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 100%;
+}
+
+.img {
+  border-bottom-left-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+  height: 200px;
+  left: 0;
+  right: 0;
+  position: relative;
+}
+
+.small-text {
+  // margin-top: auto;
+  line-height: 2.2ch;
+}
+
+.btn-container {
+  margin-top: auto;
+  padding-left: 0;
+  padding-bottom: 0;
+  padding-top: var(--padding);
+}
+
+.date {
+  color: rgb(144, 144, 144);
+}

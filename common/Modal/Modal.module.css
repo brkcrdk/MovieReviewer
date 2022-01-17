@@ -1,0 +1,19 @@
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 13vh;
+}
+
+.modal--container {
+  --padding: 1.5rem;
+
+  background: var(--sec-clr);
+  display: flex;
+  margin-inline: 1rem;
+  border-radius: 0.5rem;
+  padding: var(--padding);
+  flex-direction: column;
+  gap: var(--padding);
+  justify-content: center;
+}
