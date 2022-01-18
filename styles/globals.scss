@@ -1,6 +1,5 @@
 @import "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap";
-html,
-body {
+:root {
   font-family: -apple-system, "Roboto", BlinkMacSystemFont, Segoe UI, Roboto,
     Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   background: rgb(26, 26, 26);
@@ -9,6 +8,11 @@ body {
   --tablet: 1200px;
   --smTablet: 900px;
   --mobile: 570px;
+
+  --sm-gap: 1rem;
+  --md-gap: 2rem;
+  --bg-gap: 3rem;
+  --accent: #90caf9;
 }
 
 a {

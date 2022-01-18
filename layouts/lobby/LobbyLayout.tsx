@@ -6,10 +6,7 @@ import { useRouter } from "next/router";
 import { useClient } from "Hooks/supabase";
 import Avatar from "@mui/material/Avatar";
 import { User } from "@supabase/supabase-js";
-import useSwr from "swr";
 import { Title } from "common";
-
-const fetcher = (link: string) => fetch(link).then((res) => res.json());
 
 export default function Layout({
   children,
@@ -17,6 +14,7 @@ export default function Layout({
   buttons = null,
   middle = null,
   className = "",
+  style = {},
 }) {
   const [user, setUser] = useState<User>();
   const client = useClient();
@@ -41,7 +39,7 @@ export default function Layout({
   }
 
   return (
-    <main className={`${Styles.wrapper} ${className}`}>
+    <main className={`${Styles.wrapper} ${className}`} style={style}>
       <Container className={Styles["header-container"]} id="header">
         <Container className={Styles.left}>
           <Title className={Styles.title}>{title}</Title>

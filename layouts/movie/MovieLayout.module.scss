@@ -8,12 +8,10 @@
   gap: 2rem;
 
   position: relative;
-  bottom: -3rem;
   top: 0;
 
   background-color: var(--sec-clr);
   padding: 3rem;
-  margin-right: 3rem;
   @media screen and (max-width: 960px) {
     padding: 0;
     margin: 0;
@@ -21,8 +19,12 @@
   }
 }
 
+.rightContainer {
+  padding: var(--bg-gap);
+}
+
 .move {
-  top: calc(5rem + 3rem + 2.6rem);
+  top: var(--bg-gap);
   position: sticky;
   display: flex;
   flex-direction: column;
@@ -44,6 +46,7 @@
   @media screen and (max-width: 960px) {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
+    gap: var(--bg-gap);
   }
 }
 .btnContainer {

@@ -6,6 +6,13 @@ import Styles from "Styles/lobby/groups/[groupId]/movies/search.module.scss";
 import MovieSearchCard from "Components/lobby/MovieSearchCard/MovieSearchCard";
 import { Container, Title } from "common";
 
+/**
+  import LobbyLayout from "Layouts/lobby/LobbyLayout";
+  could be imported like this
+
+  import { LobbyLayout,MovieLayout } from 'Layouts'
+ */
+
 export function getServerSideProps() {
   return {
     props: {}, // will be passed to the page component as props

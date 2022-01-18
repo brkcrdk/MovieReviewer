@@ -31,7 +31,7 @@ export default function MovieSearchCard({
     client
       .from("movies")
       .insert({
-        id,
+        movie_id: id,
         made_at: release,
         poster_path: image,
         backdrop_path: backdrop,

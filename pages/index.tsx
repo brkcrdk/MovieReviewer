@@ -1,11 +1,9 @@
-import {
-  CircleNotificationsRounded,
-  SignpostOutlined,
-} from "@mui/icons-material";
 import { Button } from "@mui/material";
 import { useClient } from "Hooks/supabase";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+
+// Where is it failing? What url?
 
 export default function Home() {
   const router = useRouter();

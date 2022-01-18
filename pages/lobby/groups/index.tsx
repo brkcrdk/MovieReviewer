@@ -1,74 +1,55 @@
 import LobbyLayout from "Layouts/lobby/LobbyLayout";
-import { BigTitle, SmallText, SmallTitle } from "common";
+import { useCallback } from "react";
+import { SmallTitle } from "common";
 import { useClient } from "Hooks/supabase";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import GroupCard from "Components/lobby/GroupCard/GroupCard";
-import { Divider, IconButton, TextField } from "@mui/material";
+import { IconButton, TextField } from "@mui/material";
 import { Container } from "common";
 import { Button } from "@mui/material";
 import Styles from "Styles/lobby/index.module.css";
 import { Modal } from "common";
-import { useFormik } from "formik";
 import ReplayIcon from "@mui/icons-material/Replay";
-
-import * as Val from "yup";
 
 export function getServerSideProps() {
   return {
-    props: {}, // will be passed to the page component as props
+    props: {},
   };
 }
+// It would be in /movie/[movieId] file
 
 export default function Lobby() {
   const client = useClient();
   const [groups, setGroups] = useState([]);
 
-  useEffect(() => {
-    if (!client.auth.user()) {
-      client.auth.signIn({ provider: "google" });
-    }
-
-    async function getGroups() {
-      const user = client.auth.user();
-      const { data, error } = await client
-        .from("groups")
-        .select()
-        .filter("owner_id", "like", user.id)
-        .order("created_at", { ascending: false });
-      if (error) console.log(error);
-      return { data, error };
-    }
-    getGroups().then(({ data }) => {
-      setGroups(data);
-    });
-  }, [client]);
-
-  async function getGroups() {
+  const getGroups = useCallback(async () => {
     const user = client.auth.user();
     const { data, error } = await client
       .from("groups")
       .select()
       .filter("owner_id", "like", user.id)
       .order("created_at", { ascending: false });
-    if (error) console.log(error);
+    if (error) console.error(error);
+    setGroups(data);
     return { data, error };
-  }
+  }, [client]);
 
-  async function updateGroups() {
-    const { data, error } = await getGroups();
-    error
-      ? console.error(`LOBBY: INDEX > ${JSON.stringify(error)}`)
-      : setGroups(data);
-  }
+  useEffect(() => {
+    if (!client.auth.user()) {
+      client.auth.signIn({ provider: "google" });
+    }
 
+    getGroups();
+  }, [client, getGroups]);
+
+  // Have you seen the page where you can see the yt clip and only one movie?
+  // ı only created group yet
+  // Click on a movie then! Does it work?
+  // yes it works, but movie detail does not work, seralize error
+  // no i think url is ok, if u use destrucre at server side u may get this error
+  // do you do destrucre at that file
+  //
   const [isOpen, setIsOpen] = useState(false);
-
-  // const validation = Val.object().shape({
-  //   groupName: Val.string()
-  //     .required()
-  //     .min(3, "Can't be shorter than 3 characters!")
-  //     .max(20, "Can't be longer than 20 characters!"),
-  // });
 
   const toggleOpen = () => setIsOpen(!isOpen);
 
@@ -77,7 +58,7 @@ export default function Lobby() {
       <LobbyLayout
         title="Groups"
         buttons={
-          <HeaderButtons updateGroups={updateGroups} toggleOpen={toggleOpen} />
+          <HeaderButtons updateGroups={getGroups} toggleOpen={toggleOpen} />
         }
       >
         <Container className={Styles["groups-container"]}>
@@ -89,7 +70,7 @@ export default function Lobby() {
       <ModalComponent
         isOpen={isOpen}
         toggleOpen={toggleOpen}
-        update={updateGroups}
+        update={getGroups}
       />
     </>
   );
@@ -117,7 +98,8 @@ function ModalComponent({ isOpen, toggleOpen, update }) {
 
   async function createGroup(event) {
     event.preventDefault();
-    const [{ value: groupName }] = event.target;
+    const [{ value: groupName }, { value: icon }] = event.target;
+    console.log(icon);
     const user = client.auth.user();
     await client
       .from("groups")
@@ -135,6 +117,7 @@ function ModalComponent({ isOpen, toggleOpen, update }) {
           label="Group Name"
           name="groupName"
           variant="filled"
+          required
         />
 
         <input
@@ -145,6 +128,7 @@ function ModalComponent({ isOpen, toggleOpen, update }) {
           multiple
           type="file"
           name="input"
+          required
         />
         <label htmlFor="raised-button-file">
           <Button variant="text" component="span" className={Styles.button}>
@@ -163,12 +147,4 @@ function ModalComponent({ isOpen, toggleOpen, update }) {
       </form>
     </Modal>
   );
-}
-
-{
-  /* {formik.errors.groupName ? (
-        <div className={Styles["error-msg"]}>
-          <SmallText></SmallText>
-        </div>
-      ) : null} */
 }

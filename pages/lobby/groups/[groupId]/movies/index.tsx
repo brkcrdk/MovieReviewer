@@ -1,77 +1,61 @@
 import { Button, TextField } from "@mui/material";
-import MovieCard from "Components/lobby/MovieCard/MovieCard";
 import { useClient } from "Hooks/supabase";
 import Layout from "Layouts/lobby/LobbyLayout";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Container } from "common";
 import Styles from "Styles/lobby/groups/[groupId]/movies/index.module.scss";
-import AddMovieCard from "Components/lobby/AddMovieCard/AddMovieCard";
-import NoMoviesFound from "Components/lobby/NoMoviesFound/NoMoviesFound";
-
-const debounce = (fn: Function) => {
-  let timer: NodeJS.Timeout;
-  return function (...args) {
-    const context = this;
-    if (timer) clearTimeout(timer);
-    timer = setTimeout(() => {
-      timer = null;
-      fn.apply(context, args);
-    }, 500);
-  };
-};
+import { AddMovieCard, NoMoviesFound, MovieCard } from "Components/lobby";
+import { debounce } from "lodash-es";
+import Loader from "Components/Loader/Loader";
 
 export default function Movies() {
   const client = useClient();
 
-  const [movies, setMovies] = useState([]);
+  const [movies, setMovies] = useState<any>(null);
 
-  const router = useRouter();
+  const {
+    query: { groupId },
+    query,
+    push,
+  } = useRouter();
 
   useEffect(() => {
     client
       .from("movies")
       .select()
-      .then(({ data, error }) => {
-        if (data.length) {
-          setMovies(data);
-        }
-      });
-  }, [client]);
+      .eq("group_id", groupId)
+      .then(({ data }) => setMovies(data));
+  }, [client, groupId]);
 
   function newMovie() {
-    const { groupId } = router.query;
-    router.push(`/lobby/groups/${groupId}/movies/search`);
+    push(`/lobby/groups/${groupId}/movies/search`);
   }
 
-  function getGroupId() {
-    return router.query.groupId;
-  }
+  const handleChange = async ({ target }) => {
+    const { value } = target;
 
-  const handleChange = async (e: any) => {
-    const id = getGroupId();
-    const query = e.target.value;
-
-    let data: any;
-
-    if (query === "") {
-      const result = await client.from("movies").select().eq("group_id", id);
-      data = result.data;
-    } else {
-      const result = await client
+    if (value === "") {
+      const { data, error } = await client
         .from("movies")
         .select()
-        .eq("group_id", id)
+        .eq("group_id", groupId);
+      console.log(error, data);
+      console.log(query);
 
-        .textSearch("title", query, { type: "websearch" });
-      console.log(result);
-      data = result.data;
+      setMovies(data);
+    } else {
+      const { data, error } = await client
+        .from("movies")
+        .select()
+        .eq("group_id", groupId)
+        .textSearch("title", value, { type: "phrase" });
+      console.log(data, error);
+      setMovies(data);
     }
-    console.log(data);
-    setMovies(data);
   };
 
-  const handleDebounce = debounce(handleChange);
+  const handleDebounce = debounce(handleChange, 500);
 
   return (
     <Layout
@@ -92,23 +76,27 @@ export default function Movies() {
       }
     >
       <Container className={Styles["movie-container"]}>
-        {movies.map((data, index) => {
-          return (
-            <MovieCard
-              key={index}
-              title={data.title}
-              backdropImage={data.backdrop_path}
-              posterImage={data.poster_path}
-              overview={data.overview}
-              to={`/lobby/groups/${getGroupId()}/movie/${data.id}`}
-            ></MovieCard>
-          );
-        })}
-        {movies.length ? (
-          <AddMovieCard onClick={newMovie} />
+        {movies === null ? (
+          <Loader open />
         ) : (
-          <NoMoviesFound />
+          movies.map((data, index) => {
+            const { title, backdrop_path, poster_path, overview, movie_id } =
+              data;
+
+            return (
+              <MovieCard
+                key={index}
+                title={title}
+                backdropImage={backdrop_path}
+                posterImage={poster_path}
+                overview={overview}
+                to={`/lobby/groups/${groupId}/m/${movie_id}`}
+              />
+            );
+          })
         )}
+
+        {!!movies && movies.length === 0 ? <NoMoviesFound /> : null}
       </Container>
     </Layout>
   );

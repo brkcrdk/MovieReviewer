@@ -9,7 +9,7 @@ interface Inputs {
 export function SignOut({ variant, toRoute }: Inputs) {
   const client = useClient();
   const router = useRouter();
-
+  // Come to the movie details page
   function signOut() {
     client.auth.signOut();
     router.push(toRoute);

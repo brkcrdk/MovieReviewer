@@ -9,56 +9,67 @@ import {
   SmallTitle,
   BiggestTitle,
 } from "common";
+import Skeleton from "@mui/material/Skeleton";
 import Styles from "Styles/lobby/groups/[groupId]/movie/[movieId].module.scss";
 import { useClient, getClient } from "Hooks/supabase";
-import Image from "next/image";
-import { Button, Link, Paper, Rating } from "@mui/material";
+import { Button, Rating } from "@mui/material";
 import Review from "Components/lobby/Review/Review";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 export async function getServerSideProps({ query }) {
-  const client = getClient();
-
-  const { data } = await client
-    .from("movies")
-    .select()
-    .eq("group_id", query.groupId)
-    .eq("id", query.movieId);
   return {
-    props: {
-      movie: data[0],
-    },
+    props: {},
   };
 }
 
-export default function MovieDet({ movie }) {
+export default function MovieDet() {
   const [ytUrl, setYtUrl] = useState("");
   const [reviews, setReviews] = useState([]);
+  const [isLoading, setLoading] = useState(true);
+  const [movie, setMovie] = useState({
+    title: "",
+    overview: "",
+    poster_path: "",
+  });
 
-  const router = useRouter();
+  const {
+    query: { groupId, movieId },
+    push,
+  } = useRouter();
 
   const client = useClient();
   const matches = useMediaQuery("(max-width: 550px)");
 
   useEffect(() => {
-    if (router.query.movieId && router.query.movieId) {
+    if (movieId && groupId) {
       const getUrl = async () => {
-        const prom = await fetch("/api/movie/clips/" + router.query.movieId);
+        const prom = await fetch("/api/movie/clips/" + movieId);
         const { key } = await prom.json();
         setYtUrl(key);
       };
       getUrl();
 
       const getReviews = async () => {
-        const prom = await fetch(`/api/movie/reviews/${router.query.movieId}`);
+        const prom = await fetch(`/api/movie/reviews/${movieId}`);
         const reviews = await prom.json();
         setReviews(reviews);
       };
       getReviews();
-    }
-  }, [router.query, client]);
 
-  const getGroupId = () => router.query.groupId;
+      client
+        .from("movies")
+        .select()
+        .eq("group_id", groupId)
+        .eq("movie_id", movieId)
+        .then(({ data, error }) => {
+          if (error && !data.length) push(`/lobby/groups/${groupId}/movies`);
+          else {
+            setMovie(data[0]);
+            setLoading(false);
+          }
+        });
+    }
+  }, [groupId, movieId, client, push]);
 
   function watch() {
     window.open("https://youtube.com/watch?v=" + ytUrl, "_blank");
@@ -69,30 +80,38 @@ export default function MovieDet({ movie }) {
       title={"Details"}
       haveReviews={reviews.length}
       image={`https://image.tmdb.org/t/p/w300${movie?.poster_path}`}
-      buttons={
-        <Button
-          onClick={() => router.push(`/lobby/groups/${getGroupId()}/movies`)}
-        >
-          Go Back
-        </Button>
-      }
+      loading={isLoading}
     >
       <Container className={Styles.container}>
         <Container className={Styles.infoContainer}>
-          <BiggestTitle>{movie.title}</BiggestTitle>
+          <Container className={Styles.titleContainer}>
+            {isLoading ? (
+              <Skeleton variant="text" height={85} />
+            ) : (
+              <BiggestTitle>{movie?.title}</BiggestTitle>
+            )}
+            <Button
+              variant="outlined"
+              onClick={() => push(`/lobby/groups/${groupId}/movies`)}
+            >
+              Go back
+            </Button>
+          </Container>
           <Container className={Styles.ratingContainer}>
             <Rating name="read-only" value={4} readOnly />{" "}
             <Button>Rate Movie</Button>
           </Container>
-
-          <Text>{movie.overview}</Text>
+          {isLoading ? (
+            <Skeleton variant="text" height={200}></Skeleton>
+          ) : (
+            <Text>{movie?.overview}</Text>
+          )}
         </Container>
-
         {ytUrl ? (
           <Container
-            className={
-              (Styles.videoContainer, matches ? Styles.isMobile : null)
-            }
+            className={`${Styles.videoContainer} ${
+              matches ? Styles.isMobile : null
+            }`}
           >
             <SmallTitle>Preview</SmallTitle>
             <Container id="video" style={{ scrollMarginTop: "10rem" }}>
@@ -106,7 +125,7 @@ export default function MovieDet({ movie }) {
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope"
                   allowFullScreen
                   className={Styles.iframe}
-                ></iframe>
+                />
               ) : (
                 <Button onClick={watch}>Watch the preview</Button>
               )}
@@ -115,7 +134,7 @@ export default function MovieDet({ movie }) {
         ) : (
           <SmallTitle>This movie does not have any clips</SmallTitle>
         )}
-        {reviews.length ? <SmallTitle>Reviews</SmallTitle> : null}
+        {!!reviews.length && <SmallTitle>Reviews</SmallTitle>}
 
         <Container
           className={Styles.reviewContainer}
@@ -133,7 +152,7 @@ export default function MovieDet({ movie }) {
               content,
               rating,
             };
-            return <Review key={i} {...options}></Review>;
+            return <Review key={i} {...options} />;
           })}
         </Container>
       </Container>
