@@ -3,23 +3,19 @@ import { useClient } from "Hooks/supabase";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-// Where is it failing? What url?
-
 export default function Home() {
-  const router = useRouter();
-  const client = useClient();
-
-  function signIn() {
-    client.auth.signIn({ provider: "google" });
-  }
+  const { push } = useRouter();
+  const { auth } = useClient();
 
   useEffect(() => {
-    client.auth.getSessionFromUrl({ storeSession: true }).then((data) => {
-      if (client.auth.user() && data.data) {
-        router.push("/lobby/groups");
+    auth.getSessionFromUrl({ storeSession: true }).then((data) => {
+      if (auth.user() && data.data) {
+        push("/lobby/groups");
       }
     });
-  }, [router, client.auth]);
+  }, [push, auth]);
 
-  return <Button onClick={signIn}>Sign in</Button>;
+  return (
+    <Button onClick={() => auth.signIn({ provider: "google" })}>Sign in</Button>
+  );
 }

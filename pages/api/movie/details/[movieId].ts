@@ -1,6 +1,5 @@
 function getUrl(query: string) {
   const baseUrl = "https://api.themoviedb.org/3";
-  console.log(`${baseUrl}/${query}?api_key=ec85078d4b191f71aa0b11f8e69052f3`);
   return `${baseUrl}/${query}?api_key=ec85078d4b191f71aa0b11f8e69052f3`;
 }
 

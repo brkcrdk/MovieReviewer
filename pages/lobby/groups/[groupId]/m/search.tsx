@@ -73,7 +73,7 @@ export default function Group() {
 
   function goBack() {
     const { groupId } = router.query;
-    router.push(`/lobby/groups/${groupId}/movies`);
+    router.push(`/lobby/groups/${groupId}/m`);
   }
 
   return (

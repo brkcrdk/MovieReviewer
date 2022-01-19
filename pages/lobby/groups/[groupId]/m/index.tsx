@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Container } from "common";
 import Styles from "Styles/lobby/groups/[groupId]/movies/index.module.scss";
-import { AddMovieCard, NoMoviesFound, MovieCard } from "Components/lobby";
+import { NoMoviesFound, MovieCard } from "Components/lobby";
 import { debounce } from "lodash-es";
 import Loader from "Components/Loader/Loader";
 
@@ -29,28 +29,25 @@ export default function Movies() {
   }, [client, groupId]);
 
   function newMovie() {
-    push(`/lobby/groups/${groupId}/movies/search`);
+    push(`/lobby/groups/${groupId}/m/search`);
   }
 
   const handleChange = async ({ target }) => {
     const { value } = target;
 
     if (value === "") {
-      const { data, error } = await client
+      const { data } = await client
         .from("movies")
         .select()
         .eq("group_id", groupId);
-      console.log(error, data);
-      console.log(query);
 
       setMovies(data);
     } else {
-      const { data, error } = await client
+      const { data } = await client
         .from("movies")
         .select()
         .eq("group_id", groupId)
         .textSearch("title", value, { type: "phrase" });
-      console.log(data, error);
       setMovies(data);
     }
   };

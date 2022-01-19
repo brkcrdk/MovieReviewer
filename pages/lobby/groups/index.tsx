@@ -42,13 +42,6 @@ export default function Lobby() {
     getGroups();
   }, [client, getGroups]);
 
-  // Have you seen the page where you can see the yt clip and only one movie?
-  // ı only created group yet
-  // Click on a movie then! Does it work?
-  // yes it works, but movie detail does not work, seralize error
-  // no i think url is ok, if u use destrucre at server side u may get this error
-  // do you do destrucre at that file
-  //
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleOpen = () => setIsOpen(!isOpen);
@@ -83,7 +76,7 @@ function HeaderButtons({ updateGroups, toggleOpen }) {
         className={Styles["reload-btn-container"]}
         onClick={updateGroups}
       >
-        <ReplayIcon className={Styles["reload-btn"]}></ReplayIcon>
+        <ReplayIcon className={Styles["reload-btn"]} />
       </IconButton>
 
       <Button size="large" variant="outlined" onClick={toggleOpen}>
@@ -98,8 +91,12 @@ function ModalComponent({ isOpen, toggleOpen, update }) {
 
   async function createGroup(event) {
     event.preventDefault();
-    const [{ value: groupName }, { value: icon }] = event.target;
-    console.log(icon);
+    const [
+      { value: groupName },
+      // { value: icon }
+    ] = event.target;
+    console.log(groupName);
+    // console.log(icon);
     const user = client.auth.user();
     await client
       .from("groups")
@@ -120,7 +117,7 @@ function ModalComponent({ isOpen, toggleOpen, update }) {
           required
         />
 
-        <input
+        {/* <input
           accept="image/*"
           className={Styles.input}
           style={{ display: "none" }}
@@ -129,7 +126,7 @@ function ModalComponent({ isOpen, toggleOpen, update }) {
           type="file"
           name="input"
           required
-        />
+        /> */}
         <label htmlFor="raised-button-file">
           <Button variant="text" component="span" className={Styles.button}>
             Upload

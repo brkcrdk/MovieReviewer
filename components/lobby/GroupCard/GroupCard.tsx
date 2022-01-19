@@ -12,8 +12,6 @@ import { useState } from "react";
 export default function MovieCard({ data }) {
   const { name, id } = data;
 
-  const router = useRouter();
-
   return (
     <Card className={Styles.card}>
       <Container>
@@ -25,7 +23,7 @@ export default function MovieCard({ data }) {
           className={Styles.image}
         />
         <CardContent className={Styles["card--container"]}>
-          <Link href={`groups/${id}/movies`} passHref>
+          <Link href={`groups/${id}/m`} passHref>
             <a className={Styles.btn}>
               <SmallTitle className={Styles.title}>{name}</SmallTitle>
             </a>
@@ -35,7 +33,6 @@ export default function MovieCard({ data }) {
             aria-controls={open ? "basic-menu" : undefined}
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
-            // onClick={handleClick}
           >
             <MoreVertIcon></MoreVertIcon>
           </IconButton>

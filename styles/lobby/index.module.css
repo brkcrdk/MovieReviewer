@@ -41,6 +41,16 @@
   flex-wrap: wrap-reverse;
 }
 
+.reload-btn {
+  width: 100%;
+  height: 100%;
+}
+
+.reload-btn-container {
+  height: 50px;
+  width: 50px;
+}
+
 .form {
   --gap: calc(var(--padding) / 1.25);
   display: flex;

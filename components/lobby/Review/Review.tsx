@@ -3,12 +3,14 @@ import { Container, SmallText, SmallTitle, Title } from "common";
 import Styles from "./Review.module.scss";
 
 const Review = ({ author, authorDetails, content, className = "", rating }) => {
+  const avatar = authorDetails.avatar_path
+    ? `https://${authorDetails.avatar_path?.replace("/https://", "")}`
+    : null;
+
   return (
     <Paper className={`${Styles.paperContainer} ${className}`}>
       <Container className={Styles.paperHeader}>
-        <Avatar
-          src={`https://${authorDetails.avatar_path.replace("/https://", "")}`}
-        />
+        <Avatar src={avatar} />
         <SmallTitle>{author}</SmallTitle>
         <Container className={Styles.ratingContainer}>
           {rating === undefined ? (

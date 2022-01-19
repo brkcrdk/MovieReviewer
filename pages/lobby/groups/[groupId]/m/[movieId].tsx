@@ -11,7 +11,7 @@ import {
 } from "common";
 import Skeleton from "@mui/material/Skeleton";
 import Styles from "Styles/lobby/groups/[groupId]/movie/[movieId].module.scss";
-import { useClient, getClient } from "Hooks/supabase";
+import { useClient } from "Hooks/supabase";
 import { Button, Rating } from "@mui/material";
 import Review from "Components/lobby/Review/Review";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -62,7 +62,7 @@ export default function MovieDet() {
         .eq("group_id", groupId)
         .eq("movie_id", movieId)
         .then(({ data, error }) => {
-          if (error && !data.length) push(`/lobby/groups/${groupId}/movies`);
+          if (error && !data.length) push(`/lobby/groups/${groupId}/m`);
           else {
             setMovie(data[0]);
             setLoading(false);
@@ -92,7 +92,7 @@ export default function MovieDet() {
             )}
             <Button
               variant="outlined"
-              onClick={() => push(`/lobby/groups/${groupId}/movies`)}
+              onClick={() => push(`/lobby/groups/${groupId}/m`)}
             >
               Go back
             </Button>
@@ -141,19 +141,20 @@ export default function MovieDet() {
           id="reviews"
           style={{ scrollMarginTop: "5rem" }}
         >
-          {reviews.map(({ author, author_details, content }, i) => {
-            let rating: number;
-            if (author_details.rating) {
-              rating = author_details.rating / 2;
-            }
-            const options = {
-              author,
-              authorDetails: author_details,
-              content,
-              rating,
-            };
-            return <Review key={i} {...options} />;
-          })}
+          {reviews.length !== 0 &&
+            reviews.map(({ author, author_details, content }, i) => {
+              let rating: number;
+              if (author_details.rating) {
+                rating = author_details.rating / 2;
+              }
+              const options = {
+                author,
+                authorDetails: author_details,
+                content,
+                rating,
+              };
+              return <Review key={i} {...options} />;
+            })}
         </Container>
       </Container>
     </Layout>
