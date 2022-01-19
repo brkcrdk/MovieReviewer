@@ -33,9 +33,7 @@ export default function Lobby() {
   }, [client]);
 
   useEffect(() => {
-    if (!client.auth.user()) {
-      client.auth.signIn({ provider: "google" });
-    }
+    if (!client.auth.user()) client.auth.signIn({ provider: "google" });
 
     getGroups();
   }, [client, getGroups]);
@@ -89,12 +87,7 @@ function ModalComponent({ isOpen, toggleOpen, update }) {
 
   async function createGroup(event) {
     event.preventDefault();
-    const [
-      { value: groupName },
-      // { value: icon }
-    ] = event.target;
-    console.log(groupName);
-    // console.log(icon);
+    const [{ value: groupName }] = event.target;
     const user = client.auth.user();
     await client
       .from("groups")

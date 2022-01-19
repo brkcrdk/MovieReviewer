@@ -9,6 +9,10 @@ import { NoMoviesFound, MovieCard } from "Components/lobby";
 import { debounce } from "lodash-es";
 import Loader from "Components/Loader/Loader";
 
+// * The option to invite others in to a group and then view all the movies together
+//   The invited members should also be able to add movies
+// * That people can give a movie a rating and then display the average rating in the ui
+
 export default function Movies() {
   const client = useClient();
 
@@ -16,7 +20,6 @@ export default function Movies() {
 
   const {
     query: { groupId },
-    query,
     push,
   } = useRouter();
 

@@ -9,9 +9,7 @@ export default function Home() {
 
   useEffect(() => {
     auth.getSessionFromUrl({ storeSession: true }).then((data) => {
-      if (auth.user() && data.data) {
-        push("/lobby/groups");
-      }
+      if (auth.user() && data.data) push("/lobby/groups");
     });
   }, [push, auth]);
 

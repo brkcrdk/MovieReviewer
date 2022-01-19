@@ -11,7 +11,6 @@ export function useClient() {
   return client;
 }
 
-// This is for getServerSideProps because they dont allow a react hook in that function
-export function getClient() {
-  return client;
+export function useGetDb(table: string) {
+  return client.from(table);
 }
