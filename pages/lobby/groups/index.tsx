@@ -9,15 +9,13 @@ import { Container } from "common";
 import { Button } from "@mui/material";
 import Styles from "Styles/lobby/index.module.css";
 import { Modal } from "common";
-import ReplayIcon from "@mui/icons-material/Replay";
+import { Replay as ReplayIcon } from "@mui/icons-material";
 
 export function getServerSideProps() {
   return {
     props: {},
   };
 }
-// It would be in /movie/[movieId] file
-
 export default function Lobby() {
   const client = useClient();
   const [groups, setGroups] = useState([]);
