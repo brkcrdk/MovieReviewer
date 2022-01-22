@@ -16,13 +16,12 @@
     "jsx": "preserve",
     "baseUrl": "./",
     "paths": {
-      "Hooks/*": ["hooks/*"],
-      "Layouts/*": ["layouts/*"],
       "Pages/*": ["pages/*"],
       "Components/*": ["components/*"],
       "Styles/*": ["styles/*"],
       "Public/*": ["public/*"],
       "Services/*": ["services/*"]
+      "Utils/*": ["utils/*"]
     },
     "isolatedModules": true
   },

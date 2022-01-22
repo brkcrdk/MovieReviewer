@@ -1,4 +1,3 @@
-import { useClient } from "Hooks/supabase";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import { Container, SmallTitle } from "common";

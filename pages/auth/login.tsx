@@ -1,9 +1,7 @@
-import { useClient } from "Hooks/supabase";
+import { supabaseClient } from "utils";
 
 export default function Login() {
-  const client = useClient();
-
-  client.auth.signIn({ provider: "google" }, { redirectTo: "/lobby" });
+  supabaseClient.auth.signIn({ provider: "google" }, { redirectTo: "/lobby" });
 
   return <h1>hello</h1>;
 }

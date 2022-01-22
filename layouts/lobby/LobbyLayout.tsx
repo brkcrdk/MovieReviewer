@@ -3,10 +3,10 @@ import { Container } from "common";
 import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { useClient } from "Hooks/supabase";
 import Avatar from "@mui/material/Avatar";
 import { User } from "@supabase/supabase-js";
 import { Title } from "common";
+import { supabaseClient } from "utils";
 
 export default function Layout({
   children,
@@ -17,23 +17,25 @@ export default function Layout({
   style = {},
 }) {
   const [user, setUser] = useState<User>();
-  const client = useClient();
-  const router = useRouter();
-
-  useEffect(() => setUser(client.auth.user()), [client.auth]);
+  const { push, pathname } = useRouter();
 
   useEffect(() => {
-    if (user === null) router.push("/");
-  }, [router, user]);
 
-  client.auth.onAuthStateChange((_, session) => setUser(session as any));
+    const currentUser = supabaseClient.auth.user();
+    setUser(currentUser);
+  }, []);
 
-  function signOut() {
-    client.auth.signOut();
-  }
+  useEffect(() => {
+    if (user === null) push("/");
+  }, [push, user]);
 
-  function gotoGroups() {
-    router.push("/lobby/groups");
+  async function signOut() {
+    await supabaseClient.auth.signOut();
+    await fetch("/api/auth/remove", {
+      method: "GET",
+      credentials: "same-origin",
+    });
+    push("/");
   }
 
   return (
@@ -41,19 +43,19 @@ export default function Layout({
       <Container className={Styles["header-container"]} id="header">
         <Container className={Styles.left}>
           <Title className={Styles.title}>{title}</Title>
-          {router.pathname !== "/lobby/groups" ? (
-            <Button onClick={gotoGroups}>To Groups</Button>
-          ) : null}
+          {pathname !== "/lobby/groups" && (
+            <Button onClick={() => push("/lobby/groups")}>To Groups</Button>
+          )}
         </Container>
         <Container className={Styles.middle}>{middle}</Container>
         <Container className={Styles.rightContainer}>
           <Container className={Styles["btn-container"]}>{buttons}</Container>
-          {user ? (
+          {user && (
             <>
               <Button onClick={signOut}>Sign out</Button>
               <UserAvatar user={user} className={Styles.avatar} />
             </>
-          ) : null}
+          )}
         </Container>
       </Container>
       <Container>{children}</Container>

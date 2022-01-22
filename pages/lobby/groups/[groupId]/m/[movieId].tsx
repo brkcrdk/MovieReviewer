@@ -13,7 +13,7 @@ import {
 } from "common";
 import Skeleton from "@mui/material/Skeleton";
 import Styles from "Styles/lobby/groups/[groupId]/movie/[movieId].module.scss";
-import { useClient, useGetDb } from "Hooks/supabase";
+import { supabaseClient } from "utils";
 import { Button, Rating, useMediaQuery } from "@mui/material";
 import Review from "Components/lobby/Review/Review";
 import { getReviews } from "Services/api/reviews";
@@ -24,6 +24,7 @@ export async function getServerSideProps({ query }) {
     props: {},
   };
 }
+
 
 export default function MovieDet() {
   const [ytUrl, setYtUrl] = useState("");
@@ -58,6 +59,7 @@ export default function MovieDet() {
     push,
   } = useRouter();
 
+        
   const getYtUrl = useCallback(async () => {
     const prom = await fetch("/api/movie/clips/" + movieId);
     const { key } = await prom.json();
@@ -87,6 +89,7 @@ export default function MovieDet() {
     }
     main();
   }, [getYtUrl, movieId, groupId, client.auth]);
+
 
   function watch() {
     window.open("https://youtube.com/watch?v=" + ytUrl, "_blank");

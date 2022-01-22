@@ -1,8 +1,16 @@
 import { SmallText, Title } from "common";
 import Styles from "./MovieSearchCard.module.scss";
 import Card from "@mui/material/Card";
-import { Alert, Box, Button, CardActions, CardMedia } from "@mui/material";
-import { useClient } from "Hooks/supabase";
+
+import {
+  Alert,
+  backdropClasses,
+  Box,
+  Button,
+  CardActions,
+  CardMedia,
+} from "@mui/material";
+import { supabaseClient } from "utils";
 import { useRouter } from "next/router";
 import { getMovie } from "Services/db/movies";
 
@@ -17,7 +25,6 @@ export default function MovieSearchCard({
   backdrop,
   onError,
 }) {
-  const client = useClient();
   const router = useRouter();
 
   async function addMovie() {
@@ -26,7 +33,7 @@ export default function MovieSearchCard({
     const [data, error] = await getMovie(groupId, movieId);
 
     if (!data) {
-      client
+      supabaseClient
         .from("movies")
         .insert({
           movie_id: movieId,
@@ -44,6 +51,7 @@ export default function MovieSearchCard({
     } else {
       onError();
     }
+
   }
 
   return (
