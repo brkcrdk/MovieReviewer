@@ -1,9 +1,7 @@
-import { useClient as getClient } from "hooks/supabase";
-
-const client = getClient();
+import supabaseClient from "Utils/supabaseClient";
 
 export const getGroupsFromAuthor = async (authorId: string) => {
-  const { data, error } = await client
+  const { data, error } = await supabaseClient
     .from("groups")
     .select()
     .eq("owner_id", authorId)

@@ -20,9 +20,7 @@ export default function Lobby() {
     const [data, error] = await getGroupsFromAuthor(userId);
     setGroups(data as any);
     if (error) console.error(error);
-    // return [data, error];
-  }, [client]);
-
+  }, [supabaseClient]);
 
   useEffect(() => {
     if (!supabaseClient.auth.user())

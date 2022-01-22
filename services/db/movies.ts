@@ -1,9 +1,7 @@
-import { useClient as getClient } from "hooks/supabase";
-
-const client = getClient();
+import supabaseClient from "Utils/supabaseClient";
 
 export const getAllMovies = async (groupId: string) => {
-  const { data, error } = await client
+  const { data, error } = await supabaseClient
     .from("movies")
     .select()
     .eq("group_id", groupId);
@@ -12,7 +10,7 @@ export const getAllMovies = async (groupId: string) => {
 };
 
 export const getMovieFromAuthor = async (author_id: string) => {
-  const { data, error } = await client
+  const { data, error } = await supabaseClient
     .from("movies")
     .select()
     .eq("owner_id", author_id);
@@ -20,7 +18,7 @@ export const getMovieFromAuthor = async (author_id: string) => {
 };
 
 export const getMovie = async (groupId, movieId) => {
-  const { data, error } = await client
+  const { data, error } = await supabaseClient
     .from("movies")
     .select()
     .eq("group_id", groupId)
