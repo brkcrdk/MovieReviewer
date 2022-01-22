@@ -1,6 +1,6 @@
 import Styles from "./LobbyLayout.module.scss";
-import { BigTitle, Container } from "common";
-import { Button, StyledEngineProvider } from "@mui/material";
+import { Container } from "common";
+import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useClient } from "Hooks/supabase";
@@ -26,9 +26,7 @@ export default function Layout({
     if (user === null) router.push("/");
   }, [router, user]);
 
-  client.auth.onAuthStateChange((type, session) => {
-    setUser(session as any);
-  });
+  client.auth.onAuthStateChange((_, session) => setUser(session as any));
 
   function signOut() {
     client.auth.signOut();

@@ -1,47 +1,49 @@
 import { SmallText, Title } from "common";
-import Image from "next/image";
 import Styles from "./MovieSearchCard.module.scss";
 import Card from "@mui/material/Card";
-import {
-  Alert,
-  backdropClasses,
-  Box,
-  Button,
-  CardActions,
-  CardMedia,
-} from "@mui/material";
+import { Alert, Box, Button, CardActions, CardMedia } from "@mui/material";
 import { useClient } from "Hooks/supabase";
 import { useRouter } from "next/router";
+import { getMovie } from "Services/db/movies";
 
 export default function MovieSearchCard({
-  id,
+  id: movieId,
   title,
   adoult,
   overview,
   image,
   release,
+  onClick,
   backdrop,
+  onError,
 }) {
   const client = useClient();
   const router = useRouter();
 
-  function addMovie() {
-    const group_id = router.query.groupId;
-    console.log(group_id);
-    client
-      .from("movies")
-      .insert({
-        movie_id: id,
-        made_at: release,
-        poster_path: image,
-        backdrop_path: backdrop,
-        overview,
-        group_id,
-        title,
-      })
-      .then(({ data, error }) => {
-        console.log(data, error);
-      });
+  async function addMovie() {
+    const { groupId } = router.query;
+
+    const [data, error] = await getMovie(groupId, movieId);
+
+    if (!data) {
+      client
+        .from("movies")
+        .insert({
+          movie_id: movieId,
+          made_at: release,
+          poster_path: image,
+          backdrop_path: backdrop,
+          overview,
+          group_id: groupId,
+          title,
+        })
+        .then(({ data, error }) => {
+          console.log(data, error);
+          onClick(error);
+        });
+    } else {
+      onError();
+    }
   }
 
   return (

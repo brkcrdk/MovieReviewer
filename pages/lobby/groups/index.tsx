@@ -10,6 +10,7 @@ import { Button } from "@mui/material";
 import Styles from "Styles/lobby/index.module.css";
 import { Modal } from "common";
 import { Replay as ReplayIcon } from "@mui/icons-material";
+import { getGroupsFromAuthor } from "Services/db";
 
 export function getServerSideProps() {
   return {
@@ -21,15 +22,11 @@ export default function Lobby() {
   const [groups, setGroups] = useState([]);
 
   const getGroups = useCallback(async () => {
-    const user = client.auth.user();
-    const { data, error } = await client
-      .from("groups")
-      .select()
-      .filter("owner_id", "like", user.id)
-      .order("created_at", { ascending: false });
+    const { id: userId } = client.auth.user();
+    const [data, error] = await getGroupsFromAuthor(userId);
+    setGroups(data as any);
     if (error) console.error(error);
-    setGroups(data);
-    return { data, error };
+    // return [data, error];
   }, [client]);
 
   useEffect(() => {
