@@ -21,7 +21,6 @@ export function getServerSideProps() {
   };
 }
 
-
 const HeaderButton = ({ goBack }) => (
   <Button size="large" variant="outlined" onClick={goBack}>
     Go Back
