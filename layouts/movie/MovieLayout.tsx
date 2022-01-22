@@ -3,7 +3,6 @@ import { BigTitle, Container } from "common";
 import { Button, Link, Paper } from "@mui/material";
 // import { useEffect, useState } from "react";
 // import { useRouter } from "next/router";
-// import { useClient } from "Hooks/supabase";
 // import Avatar from "@mui/material/Avatar";
 // import { User } from "@supabase/supabase-js";
 // import useSwr from "swr";
