@@ -16,12 +16,6 @@ import { Button, Rating } from "@mui/material";
 import Review from "Components/lobby/Review/Review";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-export async function getServerSideProps({ query }) {
-  return {
-    props: {},
-  };
-}
-
 export default function MovieDet() {
   const [ytUrl, setYtUrl] = useState("");
   const [reviews, setReviews] = useState([]);

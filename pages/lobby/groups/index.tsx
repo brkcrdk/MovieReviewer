@@ -11,11 +11,6 @@ import Styles from "Styles/lobby/index.module.css";
 import { Modal } from "common";
 import { Replay as ReplayIcon } from "@mui/icons-material";
 
-export function getServerSideProps() {
-  return {
-    props: {},
-  };
-}
 export default function Lobby() {
   const client = useClient();
   const [groups, setGroups] = useState([]);

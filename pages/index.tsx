@@ -2,18 +2,15 @@ import { Button } from "@mui/material";
 import { useClient } from "Hooks/supabase";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { supabaseClient } from "utils";
 
 export default function Home() {
   const { push } = useRouter();
-  const { auth } = useClient();
 
-  useEffect(() => {
-    auth.getSessionFromUrl({ storeSession: true }).then((data) => {
-      if (auth.user() && data.data) push("/lobby/groups");
-    });
-  }, [push, auth]);
+  const handleLogin = async () => {
+    await supabaseClient.auth.signIn({ provider: "google" });
+    push("/lobby/groups");
+  };
 
-  return (
-    <Button onClick={() => auth.signIn({ provider: "google" })}>Sign in</Button>
-  );
+  return <Button onClick={handleLogin}>Sign in</Button>;
 }
