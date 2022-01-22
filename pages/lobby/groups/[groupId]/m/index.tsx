@@ -3,7 +3,7 @@ import Layout from "Layouts/lobby/LobbyLayout";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Container } from "common";
-import Styles from "Styles/lobby/groups/[groupId]/movies/index.module.scss";
+import Styles from "styles/lobby/groups/[groupId]/movies/index.module.scss";
 import { NoMoviesFound, MovieCard } from "Components/lobby";
 import { debounce } from "lodash-es";
 import Loader from "Components/Loader/Loader";

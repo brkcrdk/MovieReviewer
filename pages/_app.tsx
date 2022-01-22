@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import nookies from "nookies";
 import App, { AppContext } from "next/app";
 import { useRouter } from "next/router";
+import Loader from "Components/Loader/Loader";
 
 function MyApp({ Component, pageProps }) {
   const [loading, setLoading] = useState(false);
@@ -38,11 +39,9 @@ function MyApp({ Component, pageProps }) {
   return (
     <SnackbarProvider maxSnack={3}>
       <ThemeProvider theme={darkTheme}>
-           {loading ? <div>Loading...</div> : <Component {...pageProps} />}
-
+        {loading ? <Loader open /> : <Component {...pageProps} />}
       </ThemeProvider>
     </SnackbarProvider>
-
   );
 }
 

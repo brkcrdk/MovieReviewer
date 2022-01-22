@@ -1,13 +1,11 @@
-import Layout from "Layouts/movie/MovieLayout";
+import Layout from "layouts/movie/MovieLayout";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import {
   Container,
   Text,
   SmallTitle,
-  BiggestTitle,
   Modal,
-  Title,
   SmallText,
   BigTitle,
 } from "common";
@@ -24,7 +22,6 @@ export async function getServerSideProps({ query }) {
     props: {},
   };
 }
-
 
 export default function MovieDet() {
   const [ytUrl, setYtUrl] = useState("");
@@ -52,14 +49,13 @@ export default function MovieDet() {
     return niceOverview;
   }
 
-  const client = useClient();
+  const client = supabaseClient;
 
   const {
     query: { groupId, movieId },
     push,
   } = useRouter();
 
-        
   const getYtUrl = useCallback(async () => {
     const prom = await fetch("/api/movie/clips/" + movieId);
     const { key } = await prom.json();
@@ -89,7 +85,6 @@ export default function MovieDet() {
     }
     main();
   }, [getYtUrl, movieId, groupId, client.auth]);
-
 
   function watch() {
     window.open("https://youtube.com/watch?v=" + ytUrl, "_blank");
