@@ -42,9 +42,6 @@
   display: flex;
   gap: 0.5rem;
   justify-content: space-between;
-  & > * {
-    // width: ;
-  }
 }
 
 .rightContainer {
@@ -73,5 +70,8 @@
   }
   & > .title {
     padding-bottom: 5px;
+    @media screen and (max-width: 850px) {
+      display: none;
+    }
   }
 }

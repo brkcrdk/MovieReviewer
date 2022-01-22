@@ -18,11 +18,11 @@
   gap: var(--md-gap);
   display: flex;
   flex-direction: column;
+  flex-wrap: wrap;
   @media screen and (max-width: 960px) {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    flex-wrap: wrap;
   }
 }
 
@@ -55,6 +55,33 @@
   align-items: center;
   gap: 1rem;
   & > button {
-    height: 50px;
+    height: 40px;
   }
+}
+
+.rateText {
+  color: rgb(199, 199, 199);
+}
+
+.video {
+  width: 100%;
+  height: auto;
+}
+
+.movieTitle {
+  @media screen and (max-width: 750px) {
+    font-size: 2rem;
+  }
+}
+
+.userRatingContanier {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.ratingWrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }

@@ -1,10 +1,26 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import LobbyLayout from "Layouts/lobby/LobbyLayout";
-import { Button, TextField } from "@mui/material";
+import { Button, Snackbar, TextField } from "@mui/material";
 import Styles from "Styles/lobby/groups/[groupId]/movies/search.module.scss";
 import MovieSearchCard from "Components/lobby/MovieSearchCard/MovieSearchCard";
 import { Container, Title } from "common";
+import { Alert } from "@mui/material";
+
+import { VariantType, useSnackbar } from "notistack";
+/**
+  import LobbyLayout from "Layouts/lobby/LobbyLayout";
+  could be imported like this
+
+  import { LobbyLayout,MovieLayout } from 'Layouts'
+ */
+
+export function getServerSideProps() {
+  return {
+    props: {}, // will be passed to the page component as props
+  };
+}
+
 
 const HeaderButton = ({ goBack }) => (
   <Button size="large" variant="outlined" onClick={goBack}>
@@ -31,6 +47,7 @@ export default function Group() {
     errors: null,
   });
   const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     async function main() {
@@ -63,6 +80,24 @@ export default function Group() {
     router.push(`/lobby/groups/${groupId}/m`);
   }
 
+  // const handleClose = (
+  //   event?: React.SyntheticEvent | Event,
+  //   reason?: string
+  // ) => {
+  //   if (reason === "clickaway") {
+  //     return;
+  //   }
+
+  //   setIsOpen(false);
+  //   setErrorIsOpen(false);
+  // };
+
+  const showAlert = () =>
+    enqueueSnackbar("Movie Added!", { variant: "success" });
+
+  const showErrorAlert = () =>
+    enqueueSnackbar("Movie already added!", { variant: "error" });
+
   return (
     <LobbyLayout title="Movies">
       <Container className={Styles.wrapper}>
@@ -88,9 +123,25 @@ export default function Group() {
             release={v.release_date}
             backdrop={v.backdrop_path}
             id={v.id}
+            onClick={showAlert}
+            onError={showErrorAlert}
           />
         ))}
       </Container>
+      {/* <Snackbar open={isOpen} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
+          Movie Added!
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={isErrorOpen}
+        autoHideDuration={6000}
+        onClose={handleClose}
+      >
+        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          Movie already added!
+        </Alert>
+      </Snackbar> */}
     </LobbyLayout>
   );
 }

@@ -1,6 +1,7 @@
 import "Styles/globals.scss";
 import { ThemeProvider } from "@mui/material";
 import { darkTheme } from "themes/dark";
+import { SnackbarProvider } from "notistack";
 import { supabaseClient } from "utils";
 import { useEffect, useState } from "react";
 import nookies from "nookies";
@@ -35,9 +36,13 @@ function MyApp({ Component, pageProps }) {
   }, [push]);
 
   return (
-    <ThemeProvider theme={darkTheme}>
-      {loading ? <div>Loading...</div> : <Component {...pageProps} />}
-    </ThemeProvider>
+    <SnackbarProvider maxSnack={3}>
+      <ThemeProvider theme={darkTheme}>
+           {loading ? <div>Loading...</div> : <Component {...pageProps} />}
+
+      </ThemeProvider>
+    </SnackbarProvider>
+
   );
 }
 

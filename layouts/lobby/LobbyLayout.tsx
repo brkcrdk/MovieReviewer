@@ -1,6 +1,6 @@
 import Styles from "./LobbyLayout.module.scss";
-import { BigTitle, Container } from "common";
-import { Button, StyledEngineProvider } from "@mui/material";
+import { Container } from "common";
+import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Avatar from "@mui/material/Avatar";
@@ -20,6 +20,7 @@ export default function Layout({
   const { push, pathname } = useRouter();
 
   useEffect(() => {
+
     const currentUser = supabaseClient.auth.user();
     setUser(currentUser);
   }, []);
