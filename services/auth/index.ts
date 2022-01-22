@@ -1,9 +1,9 @@
-import { useClient as getClient } from "hooks/supabase";
+import { supabaseClient } from "utils";
 
-const { auth } = getClient();
+export const signIn = () => supabaseClient.auth.signIn({ provider: "google" });
 
-export const signIn = () => auth.signIn({ provider: "google" });
+export const signOut = supabaseClient.auth.signOut;
 
-export const signOut = auth.signOut;
-
-export const getUserFromUrl = auth.getSessionFromUrl({ storeSession: true });
+export const getUserFromUrl = supabaseClient.auth.getSessionFromUrl({
+  storeSession: true,
+});

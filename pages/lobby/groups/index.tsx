@@ -20,13 +20,13 @@ export default function Lobby() {
     const [data, error] = await getGroupsFromAuthor(userId);
     setGroups(data as any);
     if (error) console.error(error);
-  }, [supabaseClient]);
+  }, []);
 
   useEffect(() => {
     if (!supabaseClient.auth.user())
       supabaseClient.auth.signIn({ provider: "google" });
     getGroups();
-  }, [, getGroups]);
+  }, [getGroups]);
 
   const [isOpen, setIsOpen] = useState(false);
 
