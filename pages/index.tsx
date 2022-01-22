@@ -1,7 +1,5 @@
 import { Button } from "@mui/material";
-import { useClient } from "Hooks/supabase";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 import { supabaseClient } from "utils";
 
 export default function Home() {

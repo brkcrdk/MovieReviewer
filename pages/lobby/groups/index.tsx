@@ -1,7 +1,6 @@
 import LobbyLayout from "Layouts/lobby/LobbyLayout";
 import { useCallback } from "react";
 import { SmallTitle } from "common";
-import { useClient } from "Hooks/supabase";
 import { useEffect, useState } from "react";
 import GroupCard from "Components/lobby/GroupCard/GroupCard";
 import { IconButton, TextField } from "@mui/material";
@@ -10,14 +9,14 @@ import { Button } from "@mui/material";
 import Styles from "Styles/lobby/index.module.css";
 import { Modal } from "common";
 import { Replay as ReplayIcon } from "@mui/icons-material";
+import { supabaseClient } from "utils";
 
 export default function Lobby() {
-  const client = useClient();
   const [groups, setGroups] = useState([]);
 
   const getGroups = useCallback(async () => {
-    const user = client.auth.user();
-    const { data, error } = await client
+    const user = supabaseClient.auth.user();
+    const { data, error } = await supabaseClient
       .from("groups")
       .select()
       .filter("owner_id", "like", user.id)
@@ -25,13 +24,13 @@ export default function Lobby() {
     if (error) console.error(error);
     setGroups(data);
     return { data, error };
-  }, [client]);
+  }, []);
 
   useEffect(() => {
-    if (!client.auth.user()) client.auth.signIn({ provider: "google" });
-
+    if (!supabaseClient.auth.user())
+      supabaseClient.auth.signIn({ provider: "google" });
     getGroups();
-  }, [client, getGroups]);
+  }, [, getGroups]);
 
   const [isOpen, setIsOpen] = useState(false);
 

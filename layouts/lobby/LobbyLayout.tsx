@@ -3,7 +3,6 @@ import { BigTitle, Container } from "common";
 import { Button, StyledEngineProvider } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { useClient } from "Hooks/supabase";
 import Avatar from "@mui/material/Avatar";
 import { User } from "@supabase/supabase-js";
 import { Title } from "common";
@@ -18,7 +17,6 @@ export default function Layout({
   style = {},
 }) {
   const [user, setUser] = useState<User>();
-  const client = useClient();
   const { push, pathname } = useRouter();
 
   useEffect(() => {

@@ -1,5 +1,4 @@
 import { Button, TextField } from "@mui/material";
-import { useClient } from "Hooks/supabase";
 import Layout from "Layouts/lobby/LobbyLayout";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -8,14 +7,13 @@ import Styles from "Styles/lobby/groups/[groupId]/movies/index.module.scss";
 import { NoMoviesFound, MovieCard } from "Components/lobby";
 import { debounce } from "lodash-es";
 import Loader from "Components/Loader/Loader";
+import { supabaseClient } from "utils";
 
 // * The option to invite others in to a group and then view all the movies together
 //   The invited members should also be able to add movies
 // * That people can give a movie a rating and then display the average rating in the ui
 
 export default function Movies() {
-  const client = useClient();
-
   const [movies, setMovies] = useState<any>(null);
 
   const {
@@ -24,12 +22,12 @@ export default function Movies() {
   } = useRouter();
 
   useEffect(() => {
-    client
+    supabaseClient
       .from("movies")
       .select()
       .eq("group_id", groupId)
       .then(({ data }) => setMovies(data));
-  }, [client, groupId]);
+  }, [groupId]);
 
   function newMovie() {
     push(`/lobby/groups/${groupId}/m/search`);
@@ -39,14 +37,14 @@ export default function Movies() {
     const { value } = target;
 
     if (value === "") {
-      const { data } = await client
+      const { data } = await supabaseClient
         .from("movies")
         .select()
         .eq("group_id", groupId);
 
       setMovies(data);
     } else {
-      const { data } = await client
+      const { data } = await supabaseClient
         .from("movies")
         .select()
         .eq("group_id", groupId)

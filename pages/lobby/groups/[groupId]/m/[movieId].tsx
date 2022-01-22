@@ -11,10 +11,10 @@ import {
 } from "common";
 import Skeleton from "@mui/material/Skeleton";
 import Styles from "Styles/lobby/groups/[groupId]/movie/[movieId].module.scss";
-import { useClient } from "Hooks/supabase";
 import { Button, Rating } from "@mui/material";
 import Review from "Components/lobby/Review/Review";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { supabaseClient } from "utils";
 
 export default function MovieDet() {
   const [ytUrl, setYtUrl] = useState("");
@@ -31,7 +31,6 @@ export default function MovieDet() {
     push,
   } = useRouter();
 
-  const client = useClient();
   const matches = useMediaQuery("(max-width: 550px)");
 
   useEffect(() => {
@@ -50,7 +49,7 @@ export default function MovieDet() {
       };
       getReviews();
 
-      client
+      supabaseClient
         .from("movies")
         .select()
         .eq("group_id", groupId)
@@ -63,7 +62,7 @@ export default function MovieDet() {
           }
         });
     }
-  }, [groupId, movieId, client, push]);
+  }, [groupId, movieId, push]);
 
   function watch() {
     window.open("https://youtube.com/watch?v=" + ytUrl, "_blank");

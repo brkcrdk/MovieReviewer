@@ -10,7 +10,7 @@ import {
   CardActions,
   CardMedia,
 } from "@mui/material";
-import { useClient } from "Hooks/supabase";
+import { supabaseClient } from "utils";
 import { useRouter } from "next/router";
 
 export default function MovieSearchCard({
@@ -22,13 +22,12 @@ export default function MovieSearchCard({
   release,
   backdrop,
 }) {
-  const client = useClient();
   const router = useRouter();
 
   function addMovie() {
     const group_id = router.query.groupId;
     console.log(group_id);
-    client
+    supabaseClient
       .from("movies")
       .insert({
         movie_id: id,
