@@ -77,13 +77,11 @@ function HeaderButtons({ updateGroups, toggleOpen }) {
 }
 
 function ModalComponent({ isOpen, toggleOpen, update }) {
-  const client = useClient();
-
   async function createGroup(event) {
     event.preventDefault();
     const [{ value: groupName }] = event.target;
-    const user = client.auth.user();
-    await client
+    const user = supabaseClient.auth.user();
+    await supabaseClient
       .from("groups")
       .insert([{ name: groupName, icon: "tesing", owner_id: user.id }]);
     await update();
