@@ -9,4 +9,4 @@ Pull this repo, then switch to the `dev` branch and then do what you are good at
  - Allow to display the average rating of all users to the group, NOT DONE
  - Or just fix bugs, NOT DONE
 
- > I apreciate all contribution, thank you!
+ > I appreciate all contribution, thank you!
