@@ -1,6 +1,6 @@
 ## Hi contributer!
 
-### How to contribute
+### If you want to contribute
 
 Pull this repo, then switch to the `dev` branch and then do what you are good at (coding). Add the repo url `https://github.com/VincentThomas06/MovieReviewer` to a remote branch, Then commit and push the changes!
 
@@ -11,4 +11,5 @@ Pull this repo, then switch to the `dev` branch and then do what you are good at
 - Allow to display the average rating of all users to the group, NOT DONE
 - Or just fix bugs, NOT DONE
 
-> I appreciate all contribution, thank you!
+> I appreciate all contribution, thank you if you decide to contribute.
+> And thanks to all that has contributed.
