@@ -1,20 +1,24 @@
 import { Button, TextField } from "@mui/material";
 import Layout from "Layouts/lobby/LobbyLayout";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Container } from "common";
 import Styles from "styles/lobby/groups/[groupId]/movies/index.module.scss";
 import { NoMoviesFound, MovieCard } from "Components/lobby";
 import { debounce } from "lodash-es";
 import Loader from "Components/Loader/Loader";
 import { supabaseClient } from "utils";
-
+import { SearchOutlined } from "@mui/icons-material";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { IconButton } from "@mui/material";
+import { getMovie, getMovieRatingFromGroup } from "Services/db";
 // * The option to invite others in to a group and then view all the movies together
 //   The invited members should also be able to add movies
 // * That people can give a movie a rating and then display the average rating in the ui
 
 export default function Movies() {
   const [movies, setMovies] = useState<any>(null);
+  let searchMatches = useMediaQuery("(min-width:640px)");
 
   const {
     query: { groupId },
@@ -26,7 +30,11 @@ export default function Movies() {
       .from("movies")
       .select()
       .eq("group_id", groupId)
-      .then(({ data }) => setMovies(data));
+      .then(({ data, error }) => {
+        console.log(data);
+        console.log("ERROR", error);
+        setMovies(data);
+      });
   }, [groupId]);
 
   function newMovie() {
@@ -57,20 +65,33 @@ export default function Movies() {
 
   return (
     <Layout
+      leftButtons={
+        !searchMatches ? (
+          <Container className={Styles.searchButtonContainer}>
+            <IconButton size="large">
+              <SearchOutlined />
+            </IconButton>
+          </Container>
+        ) : null
+      }
       title="Movies"
       buttons={
-        <Button onClick={newMovie} variant="outlined" size="large">
-          Add movie
-        </Button>
+        <>
+          <Button onClick={newMovie} variant="outlined" size="large">
+            Add movie
+          </Button>
+        </>
       }
       middle={
-        <TextField
-          className={Styles.input}
-          placeholder="Search added movies"
-          size="medium"
-          fullWidth
-          onChange={handleDebounce}
-        />
+        searchMatches ? (
+          <TextField
+            className={Styles.input}
+            placeholder="Search added movies"
+            size="medium"
+            fullWidth
+            onChange={handleDebounce}
+          />
+        ) : null
       }
     >
       <Container className={Styles["movie-container"]}>
@@ -80,7 +101,6 @@ export default function Movies() {
           movies.map((data, index) => {
             const { title, backdrop_path, poster_path, overview, movie_id } =
               data;
-
             return (
               <MovieCard
                 key={index}
@@ -89,6 +109,7 @@ export default function Movies() {
                 posterImage={poster_path}
                 overview={overview}
                 to={`/lobby/groups/${groupId}/m/${movie_id}`}
+                id={movie_id}
               />
             );
           })

@@ -14,11 +14,8 @@ function MyApp({ Component, pageProps }) {
   const { push, asPath, pathname } = useRouter();
 
   useEffect(() => {
-    if (asPath.match("access_token")) {
-      setLoading(true);
-    } else {
-      setLoading(false);
-    }
+    if (asPath.match("access_token")) setLoading(true);
+    else setLoading(false);
   }, [asPath]);
 
   useEffect(() => {

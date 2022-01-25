@@ -1,5 +1,5 @@
 import LobbyLayout from "Layouts/lobby/LobbyLayout";
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import { SmallTitle } from "common";
 import { useEffect, useState } from "react";
 import GroupCard from "Components/lobby/GroupCard/GroupCard";
@@ -9,8 +9,9 @@ import { Button } from "@mui/material";
 import Styles from "Styles/lobby/index.module.css";
 import { Modal } from "common";
 import { Replay as ReplayIcon } from "@mui/icons-material";
-import { getGroupsFromAuthor } from "Services/db";
+import { getGroupIconFromId, getGroupsFromAuthor } from "Services/db";
 import { supabaseClient } from "utils";
+import { useRouter } from "next/router";
 
 export default function Lobby() {
   const [groups, setGroups] = useState([]);
@@ -73,16 +74,39 @@ function HeaderButtons({ updateGroups, toggleOpen }) {
 }
 
 function ModalComponent({ isOpen, toggleOpen, update }) {
+  const { query } = useRouter();
+
   async function createGroup(event) {
+    function load(id, { currentTarget }) {
+      const file = currentTarget.result;
+      supabaseClient.storage.from("images").upload(`groups/${id}.jpeg`, file);
+      console.log(getGroupIconFromId(id));
+    }
+
     event.preventDefault();
-    const [{ value: groupName }] = event.target;
+    const [
+      { value: groupName },
+      {
+        files: [file],
+      },
+    ] = event.target;
+
     const user = supabaseClient.auth.user();
-    await supabaseClient
+    const {
+      data: [data],
+    } = await supabaseClient
       .from("groups")
-      .insert([{ name: groupName, icon: "tesing", owner_id: user.id }]);
+      .insert([{ name: groupName, owner_id: user.id }]);
     await update();
     toggleOpen();
+
+    const { type } = file;
+    const reader = new FileReader();
+    reader.onload = load.bind(this, data.id);
+    reader.readAsArrayBuffer(file);
   }
+
+  const fileRef = useRef();
 
   return (
     <Modal isOpen={isOpen}>
@@ -96,8 +120,8 @@ function ModalComponent({ isOpen, toggleOpen, update }) {
           required
         />
 
-        {/* <input
-          accept="image/*"
+        <input
+          accept="image/jpeg"
           className={Styles.input}
           style={{ display: "none" }}
           id="raised-button-file"
@@ -105,7 +129,8 @@ function ModalComponent({ isOpen, toggleOpen, update }) {
           type="file"
           name="input"
           required
-        /> */}
+          ref={fileRef}
+        />
         <label htmlFor="raised-button-file">
           <Button variant="text" component="span" className={Styles.button}>
             Upload

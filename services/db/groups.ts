@@ -9,3 +9,11 @@ export const getGroupsFromAuthor = async (authorId: string) => {
 
   return [data, error];
 };
+
+export const getGroupIconFromId = (id: string) => {
+  const { data, error } = supabaseClient.storage
+    .from("images")
+    .getPublicUrl(`groups/${id}.jpeg`);
+  console.log(data);
+  return [data, error];
+};

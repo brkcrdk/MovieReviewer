@@ -1,3 +1,4 @@
+import { SupabaseRealtimeClient } from "@supabase/supabase-js/dist/main/lib/SupabaseRealtimeClient";
 import supabaseClient from "Utils/supabaseClient";
 
 export const getRatingFromAuthor = async (
@@ -12,4 +13,13 @@ export const getRatingFromAuthor = async (
     .eq("movie_id", movieId)
     .eq("group_id", groupId);
   return [...data, error];
+};
+
+export const getMovieRatingFromGroup = async (groupId, movieId) => {
+  const { data, error } = await supabaseClient
+    .from("reviews")
+    .select()
+    .eq("group_id", groupId)
+    .eq("movie_id", movieId);
+  return [data, error];
 };
