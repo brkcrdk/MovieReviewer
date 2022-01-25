@@ -1,24 +1,21 @@
-import { Button, TextField } from "@mui/material";
+import { Button, TextField, IconButton, useMediaQuery } from "@mui/material";
 import Layout from "Layouts/lobby/LobbyLayout";
 import { useRouter } from "next/router";
 import { Suspense, useEffect, useState } from "react";
-import { Container } from "common";
+import { Container, SmallText, Text, Title } from "common";
 import Styles from "styles/lobby/groups/[groupId]/movies/index.module.scss";
 import { NoMoviesFound, MovieCard } from "Components/lobby";
 import { debounce } from "lodash-es";
 import Loader from "Components/Loader/Loader";
-import { supabaseClient } from "utils";
+import { supabaseClient, toBase64 } from "utils";
 import { SearchOutlined } from "@mui/icons-material";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { IconButton } from "@mui/material";
-import { getMovie, getMovieRatingFromGroup } from "Services/db";
-// * The option to invite others in to a group and then view all the movies together
-//   The invited members should also be able to add movies
-// * That people can give a movie a rating and then display the average rating in the ui
+import { Modal } from "common";
 
 export default function Movies() {
   const [movies, setMovies] = useState<any>(null);
   let searchMatches = useMediaQuery("(min-width:640px)");
+
+  const [inviteOtherModal, setInviteOtherModal] = useState(false);
 
   const {
     query: { groupId },
@@ -63,6 +60,12 @@ export default function Movies() {
 
   const handleDebounce = debounce(handleChange, 500);
 
+  function submitEmail(e) {
+    e.preventDefault();
+    const [{ value }] = e.target;
+    console.log(value);
+  }
+
   return (
     <Layout
       leftButtons={
@@ -77,8 +80,11 @@ export default function Movies() {
       title="Movies"
       buttons={
         <>
-          <Button onClick={newMovie} variant="outlined" size="large">
+          <Button onClick={newMovie} variant="outlined" size="medium">
             Add movie
+          </Button>
+          <Button variant="contained" onClick={() => setInviteOtherModal(true)}>
+            Invite others!
           </Button>
         </>
       }
@@ -114,6 +120,30 @@ export default function Movies() {
             );
           })
         )}
+        <Modal isOpen={inviteOtherModal}>
+          <Title>Invite user</Title>
+          <SmallText>
+            Type{" "}
+            <a
+              style={{ color: "unset" }}
+              href={`http://localhost:3000/invite/group?id=${toBase64(
+                groupId as string
+              )}`}
+            >
+              this link{" "}
+            </a>
+            email to invite them
+          </SmallText>
+          <Container
+            style={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "flex-end",
+            }}
+          >
+            <Button onClick={() => setInviteOtherModal(false)}>Close</Button>
+          </Container>
+        </Modal>
 
         {!!movies && movies.length === 0 ? <NoMoviesFound /> : null}
       </Container>

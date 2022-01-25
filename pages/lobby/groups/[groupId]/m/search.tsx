@@ -1,23 +1,16 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import LobbyLayout from "Layouts/lobby/LobbyLayout";
-import { Button, Snackbar, TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import Styles from "Styles/lobby/groups/[groupId]/movies/search.module.scss";
 import MovieSearchCard from "Components/lobby/MovieSearchCard/MovieSearchCard";
 import { Container, Title } from "common";
-import { Alert } from "@mui/material";
 
-import { VariantType, useSnackbar } from "notistack";
-/**
-  import LobbyLayout from "Layouts/lobby/LobbyLayout";
-  could be imported like this
-
-  import { LobbyLayout,MovieLayout } from 'Layouts'
- */
+import { useSnackbar } from "notistack";
 
 export function getServerSideProps() {
   return {
-    props: {}, // will be passed to the page component as props
+    props: {},
   };
 }
 

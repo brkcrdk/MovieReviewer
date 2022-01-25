@@ -19,13 +19,15 @@ export default function Lobby() {
   const getGroups = useCallback(async () => {
     const { id: userId } = supabaseClient.auth.user();
     const [data, error] = await getGroupsFromAuthor(userId);
+
     setGroups(data as any);
     if (error) console.error(error);
   }, []);
 
   useEffect(() => {
-    if (!supabaseClient.auth.user())
+    if (!supabaseClient.auth.user()) {
       supabaseClient.auth.signIn({ provider: "google" });
+    }
     getGroups();
   }, [getGroups]);
 
@@ -74,39 +76,59 @@ function HeaderButtons({ updateGroups, toggleOpen }) {
 }
 
 function ModalComponent({ isOpen, toggleOpen, update }) {
-  const { query } = useRouter();
+  // NOTE: Thomas, i h
+
+  const [selectedImage, setSelectedImage] = useState(null);
 
   async function createGroup(event) {
-    function load(id, { currentTarget }) {
-      const file = currentTarget.result;
-      supabaseClient.storage.from("images").upload(`groups/${id}.jpeg`, file);
-      console.log(getGroupIconFromId(id));
-    }
-
+    // start loading process
     event.preventDefault();
-    const [
-      { value: groupName },
-      {
-        files: [file],
-      },
-    ] = event.target;
-
     const user = supabaseClient.auth.user();
-    const {
-      data: [data],
-    } = await supabaseClient
-      .from("groups")
-      .insert([{ name: groupName, owner_id: user.id }]);
-    await update();
-    toggleOpen();
+    const groupImage = selectedImage;
+    const [{ value: groupName }] = event.target;
 
-    const { type } = file;
-    const reader = new FileReader();
-    reader.onload = load.bind(this, data.id);
-    reader.readAsArrayBuffer(file);
+    const { data: imageUrl } = await supabaseClient.storage
+      .from("images")
+      // groups/test123 is images name -> so it should be unique i suppose
+      // for now i add unique number to it
+      .upload(`groups/${Math.random() * 1000}.jpeg`, groupImage, {
+        cacheControl: "3600",
+        upsert: false,
+      });
+    // returns this: images/groups/test123.jpeg
+    // NOTE: below url dont work if you dont have required token, so it already protected by supabase
+    // works like this: https://kmarruxsftatjzjjuddt.supabase.co/storage/v1/object/images/groups/test123.jpeg
+
+    // after loading image to database we need to add this url or key to group object.
+    // after adding to image to our group object, final result should be like this
+
+    // {
+    //  created_at: "2022-01-25T19:55:24.571621+00:00",
+    //  id: 81,
+    //  members: [],
+    //  name: "xxx",
+    //  owner_id: "ae034ff3-4cf1-473d-be44-e02a617ed4b0",
+    //  groupIcon: "images/groups/test123.jpeg",
+    // }
+
+    const { data } = await supabaseClient
+      .from("groups")
+      .insert([{ name: groupName, owner_id: user.id, groupIcon: imageUrl }]);
   }
 
-  const fileRef = useRef();
+  const onImageUpload = ({ target }) => {
+    const selectedFile = target.files[0];
+    setSelectedImage(selectedFile);
+
+    if (target.files[0]) {
+      const imageContainer = document.getElementById("image-upload");
+      const objectURL = URL.createObjectURL(selectedFile);
+      const img = document.createElement("img");
+      img.style.maxWidth = "320px";
+      img.src = objectURL;
+      imageContainer.appendChild(img);
+    }
+  };
 
   return (
     <Modal isOpen={isOpen}>
@@ -120,24 +142,31 @@ function ModalComponent({ isOpen, toggleOpen, update }) {
           required
         />
 
-        <input
-          accept="image/jpeg"
-          className={Styles.input}
-          style={{ display: "none" }}
-          id="raised-button-file"
-          multiple
-          type="file"
-          name="input"
-          required
-          ref={fileRef}
-        />
+        <div id="image-upload">
+          <input
+            accept="image/jpeg"
+            className={Styles.input}
+            style={{ display: "none" }}
+            id="raised-button-file"
+            type="file"
+            name="input"
+            required
+            onChange={onImageUpload}
+          />
+        </div>
+
         <label htmlFor="raised-button-file">
-          <Button variant="text" component="span" className={Styles.button}>
+          <Button
+            variant="text"
+            component="span"
+            style={{ width: "100%", background: "rgba(144, 202, 249, 0.08)" }}
+            className={Styles.button}
+          >
             Upload
           </Button>
         </label>
         <div className={Styles["btn-container"]}>
-          <Button size="medium" onClick={() => toggleOpen()}>
+          <Button size="medium" onClick={toggleOpen}>
             close
           </Button>
 

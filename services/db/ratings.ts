@@ -1,5 +1,7 @@
-import { SupabaseRealtimeClient } from "@supabase/supabase-js/dist/main/lib/SupabaseRealtimeClient";
 import supabaseClient from "Utils/supabaseClient";
+
+// I think that we could work on the adding and
+// viewing a icon to the group would be nice?
 
 export const getRatingFromAuthor = async (
   authorId: string,
