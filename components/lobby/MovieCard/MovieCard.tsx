@@ -1,16 +1,12 @@
-import {
-  Button,
-  Card,
-  CardActions,
-  CardMedia,
-  getToolbarUtilityClass,
-} from "@mui/material";
+import { Card, CardMedia, Rating } from "@mui/material";
 import { Box } from "@mui/system";
-import { SmallText, SmallTitle, Title } from "common";
+import { Container, SmallText, SmallTitle, Title } from "common";
 import { useEffect, useState } from "react";
 import { CardActionArea } from "@mui/material";
 import Styles from "./MovieCard.module.scss";
 import { useRouter } from "next/router";
+import { splitText } from "Utils/other";
+import { getMovieRatingFromGroup } from "Services/db";
 
 interface Inputs {
   title: string;
@@ -18,6 +14,7 @@ interface Inputs {
   backdropImage: string;
   overview: string;
   to: string;
+  id: any;
 }
 
 export default function MovieCard({
@@ -26,42 +23,48 @@ export default function MovieCard({
   backdropImage,
   overview: oldOverview,
   to,
+  id,
 }: Inputs) {
   const [overview, setOverview] = useState(oldOverview);
   const [title, setTitle] = useState(oldTitle);
   const [image, setImage] = useState(
     `https://image.tmdb.org/t/p/w500${backdropImage}`
   );
-  const router = useRouter();
+  const {
+    push,
+    query: { groupId },
+  } = useRouter();
 
-  function splitText(what: string, length: number): string {
-    const oldWhat = what;
-    const overviewArr = what.split("");
-    overviewArr[length] = "§";
-    const stringOverview = overviewArr.join("");
-    const niceOverview = stringOverview.split("§")[0];
-    if (!(oldWhat === niceOverview)) {
-      return `${niceOverview}... `;
-    }
-    return niceOverview;
-  }
+  const [rating, setRating] = useState(null);
 
   useEffect(() => {
-    if (oldOverview.length > 80) {
-      setOverview(splitText(oldOverview, 80));
+    async function main() {
+      const [data, error] = (await getMovieRatingFromGroup(groupId, id)) as any;
+      const ratingCount = data.length;
+      if (ratingCount) {
+        const ratingArr = [];
+        data.forEach((data) => ratingArr.push(data.rating));
+        let totalRatings = ratingArr.reduce((pre, curr) => pre + curr.rating);
+        console.log(totalRatings);
+        setRating(totalRatings / ratingCount);
+      }
     }
-    if (title.length > 20) {
-      setTitle(splitText(oldTitle, 20));
-    }
-  }, [oldOverview, oldTitle, title]);
+    main();
+  }, [groupId, id]);
 
-  function goto() {
-    router.push(to);
-  }
+  useEffect(() => console.log(rating), [rating]);
+
+  useEffect(() => {
+    if (oldOverview.length > 80) setOverview(splitText(oldOverview, 80));
+    if (title.length > 20) setTitle(splitText(oldTitle, 20));
+  }, [oldOverview, oldTitle, title]);
 
   return (
     <Card className={Styles.card}>
-      <CardActionArea className={Styles["card-wrapper"]} onClick={goto}>
+      <CardActionArea
+        className={Styles["card-wrapper"]}
+        onClick={() => push(to)}
+      >
         <CardMedia
           component="img"
           onError={() => {
@@ -71,7 +74,10 @@ export default function MovieCard({
           className={Styles.img}
         />
         <Box className={Styles["card--container"]}>
-          <SmallTitle>{title}</SmallTitle>
+          <Container className={Styles.ratingTitleWrapper}>
+            <SmallTitle>{title}</SmallTitle>
+            <Rating value={rating} readOnly precision={0.5} />
+          </Container>
 
           <SmallText className={Styles["small-text"]}>
             {overview} <strong>Read more</strong>

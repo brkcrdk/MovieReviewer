@@ -15,12 +15,12 @@ export default function Layout({
   middle = null,
   className = "",
   style = {},
+  leftButtons = null,
 }) {
   const [user, setUser] = useState<User>();
   const { push, pathname } = useRouter();
 
   useEffect(() => {
-
     const currentUser = supabaseClient.auth.user();
     setUser(currentUser);
   }, []);
@@ -46,15 +46,16 @@ export default function Layout({
           {pathname !== "/lobby/groups" && (
             <Button onClick={() => push("/lobby/groups")}>To Groups</Button>
           )}
+          {leftButtons}
         </Container>
         <Container className={Styles.middle}>{middle}</Container>
         <Container className={Styles.rightContainer}>
           <Container className={Styles["btn-container"]}>{buttons}</Container>
           {user && (
-            <>
-              <Button onClick={signOut}>Sign out</Button>
-              <UserAvatar user={user} className={Styles.avatar} />
-            </>
+            // <>
+            //   <Button onClick={signOut}>Sign out</Button>
+            <UserAvatar user={user} className={Styles.avatar} />
+            // </>
           )}
         </Container>
       </Container>

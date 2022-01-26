@@ -43,3 +43,9 @@
 .date {
   color: rgb(144, 144, 144);
 }
+
+.ratingTitleWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
