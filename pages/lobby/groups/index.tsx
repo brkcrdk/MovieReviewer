@@ -9,49 +9,52 @@ import { Button } from "@mui/material";
 import Styles from "Styles/lobby/index.module.css";
 import { Modal } from "common";
 import { Replay as ReplayIcon } from "@mui/icons-material";
-import { getGroupIconFromId, getGroupsFromAuthor } from "Services/db";
+import { getGroupIconFromGroupId, getGroupsFromAuthor } from "Services/db";
 import { supabaseClient } from "utils";
-import { useRouter } from "next/router";
-
+import { v4 as uuid } from "uuid";
 export default function Lobby() {
   const [groups, setGroups] = useState([]);
+  const [images, setImages] = useState([]);
 
   const getGroups = useCallback(async () => {
     const { id: userId } = supabaseClient.auth.user();
-    const [data, error] = await getGroupsFromAuthor(userId);
-
+    const [data, error]: any = await getGroupsFromAuthor(userId);
+    setImages([]);
+    data.map(async (group) => {
+      const { id } = group;
+      const [image] = await getGroupIconFromGroupId(id);
+      setImages((images) => [image, ...images]);
+    });
     setGroups(data as any);
     if (error) console.error(error);
   }, []);
 
   useEffect(() => {
-    if (!supabaseClient.auth.user()) {
-      supabaseClient.auth.signIn({ provider: "google" });
-    }
     getGroups();
   }, [getGroups]);
 
   const [isOpen, setIsOpen] = useState(false);
-
-  const toggleOpen = () => setIsOpen(!isOpen);
 
   return (
     <>
       <LobbyLayout
         title="Groups"
         buttons={
-          <HeaderButtons updateGroups={getGroups} toggleOpen={toggleOpen} />
+          <HeaderButtons
+            updateGroups={getGroups}
+            toggleOpen={() => setIsOpen(!isOpen)}
+          />
         }
       >
         <Container className={Styles["groups-container"]}>
           {groups?.map((v, i) => (
-            <GroupCard data={v} key={i} />
+            <GroupCard data={v} key={i} image={images[i]} />
           ))}
         </Container>
       </LobbyLayout>
       <ModalComponent
         isOpen={isOpen}
-        toggleOpen={toggleOpen}
+        toggleOpen={() => setIsOpen(!isOpen)}
         update={getGroups}
       />
     </>
@@ -87,11 +90,13 @@ function ModalComponent({ isOpen, toggleOpen, update }) {
     const groupImage = selectedImage;
     const [{ value: groupName }] = event.target;
 
-    const { data: imageUrl } = await supabaseClient.storage
+    const {
+      data: { Key: imageUrl },
+    } = await supabaseClient.storage
       .from("images")
       // groups/test123 is images name -> so it should be unique i suppose
       // for now i add unique number to it
-      .upload(`groups/${Math.random() * 1000}.jpeg`, groupImage, {
+      .upload(`groups/${uuid()}.jpeg`, groupImage, {
         cacheControl: "3600",
         upsert: false,
       });

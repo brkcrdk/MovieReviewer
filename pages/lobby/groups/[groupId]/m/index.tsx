@@ -60,11 +60,7 @@ export default function Movies() {
 
   const handleDebounce = debounce(handleChange, 500);
 
-  function submitEmail(e) {
-    e.preventDefault();
-    const [{ value }] = e.target;
-    console.log(value);
-  }
+  const { id: userId } = supabaseClient.auth.user();
 
   return (
     <Layout
@@ -123,16 +119,16 @@ export default function Movies() {
         <Modal isOpen={inviteOtherModal}>
           <Title>Invite user</Title>
           <SmallText>
-            Type{" "}
+            Send the link below to invite them:
+            <br />
             <a
-              style={{ color: "unset" }}
               href={`http://localhost:3000/invite/group?id=${toBase64(
                 groupId as string
-              )}`}
-            >
-              this link{" "}
-            </a>
-            email to invite them
+              )}&user_id=${userId}`}
+              style={{ color: "lightblue" }}
+            >{`http://localhost:3000/invite/group?id=${toBase64(
+              groupId as string
+            )}&user_id=${userId}`}</a>
           </SmallText>
           <Container
             style={{
