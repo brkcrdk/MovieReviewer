@@ -1,19 +1,17 @@
-import Layout from "Layouts/movie/MovieLayout";
+import Layout from "layouts/movie/MovieLayout";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import {
   Container,
   Text,
   SmallTitle,
-  BiggestTitle,
   Modal,
-  Title,
   SmallText,
   BigTitle,
 } from "common";
 import Skeleton from "@mui/material/Skeleton";
 import Styles from "Styles/lobby/groups/[groupId]/movie/[movieId].module.scss";
-import { supabaseClient } from "utils";
+import { splitText, supabaseClient } from "utils";
 import { Button, Rating, useMediaQuery } from "@mui/material";
 import Review from "Components/lobby/Review/Review";
 import { getReviews } from "Services/api/reviews";
@@ -24,7 +22,6 @@ export async function getServerSideProps({ query }) {
     props: {},
   };
 }
-
 
 export default function MovieDet() {
   const [ytUrl, setYtUrl] = useState("");
@@ -40,26 +37,13 @@ export default function MovieDet() {
   const matches = useMediaQuery("(max-width: 800px)");
   const titleMatches = useMediaQuery("(max-width: 800px)");
 
-  function splitText(what: string, length: number): string {
-    const oldWhat = what;
-    const overviewArr = what.split("");
-    overviewArr[length] = "§";
-    const stringOverview = overviewArr.join("");
-    const niceOverview = stringOverview.split("§")[0];
-    if (!(oldWhat === niceOverview)) {
-      return `${niceOverview}... `;
-    }
-    return niceOverview;
-  }
-
-  const client = useClient();
+  const client = supabaseClient;
 
   const {
     query: { groupId, movieId },
     push,
   } = useRouter();
 
-        
   const getYtUrl = useCallback(async () => {
     const prom = await fetch("/api/movie/clips/" + movieId);
     const { key } = await prom.json();
@@ -90,7 +74,6 @@ export default function MovieDet() {
     main();
   }, [getYtUrl, movieId, groupId, client.auth]);
 
-
   function watch() {
     window.open("https://youtube.com/watch?v=" + ytUrl, "_blank");
   }
@@ -99,7 +82,24 @@ export default function MovieDet() {
     e.preventDefault();
 
     const user = client.auth.user();
-    console.log(rating);
+
+    const [data, error] = await getRatingFromAuthor(
+      user.id,
+      movieId as string,
+      groupId as string
+    );
+
+    if (data) {
+      const { data, error } = await client
+        .from("reviews")
+        .delete()
+
+        .eq("movie_id", movieId)
+        .eq("group_id", groupId)
+        .eq("owner_id", user.id);
+
+      console.log(data, error);
+    }
     if (rating) {
       const { error } = await client.from("reviews").upsert({
         owner_id: user.id,

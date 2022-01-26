@@ -7,19 +7,17 @@ import { useEffect, useState } from "react";
 import nookies from "nookies";
 import App, { AppContext } from "next/app";
 import { useRouter } from "next/router";
+import Loader from "Components/Loader/Loader";
+import { setUser, signIn, signOut } from "Services/auth";
 
 function MyApp({ Component, pageProps }) {
   const [loading, setLoading] = useState(false);
   const { push, asPath, pathname } = useRouter();
 
   useEffect(() => {
-    if (asPath.match("access_token")) {
-      setLoading(true);
-    } else {
-      setLoading(false);
-    }
+    if (asPath.match("access_token")) setLoading(true);
+    else setLoading(false);
   }, [asPath]);
-
   useEffect(() => {
     supabaseClient.auth.onAuthStateChange(async (event, session) => {
       const newUser = supabaseClient.auth.user();
@@ -30,19 +28,24 @@ function MyApp({ Component, pageProps }) {
           credentials: "same-origin",
           body: JSON.stringify({ event, session }),
         });
+
+        setUser(newUser.id);
+
+        if (!newUser) {
+          await signIn();
+        }
       }
-      push("/lobby/groups");
     });
   }, [push]);
+
+  useEffect(() => {}, []);
 
   return (
     <SnackbarProvider maxSnack={3}>
       <ThemeProvider theme={darkTheme}>
-           {loading ? <div>Loading...</div> : <Component {...pageProps} />}
-
+        {loading ? <Loader open /> : <Component {...pageProps} />}
       </ThemeProvider>
     </SnackbarProvider>
-
   );
 }
 

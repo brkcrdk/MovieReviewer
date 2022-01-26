@@ -1,0 +1,22 @@
+.image {
+  border-radius: 0.25rem;
+}
+
+.groupContainer {
+  background: var(--sec-clr);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.groupInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.btnContainer {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}

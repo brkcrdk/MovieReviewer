@@ -8,6 +8,10 @@
   height: 100%;
 }
 
+.title {
+  height: 100%;
+}
+
 .btn {
   display: grid;
   grid-template-rows: 70% 1fr;
@@ -39,9 +43,11 @@
 }
 
 .card--container {
-  display: flex;
+  display: grid;
   justify-content: space-between;
   align-items: center;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: 1fr;
 }
 
 .card--container button {
@@ -51,4 +57,5 @@
 
 .card--container h1 {
   text-align: left;
+  height: 100%;
 }
