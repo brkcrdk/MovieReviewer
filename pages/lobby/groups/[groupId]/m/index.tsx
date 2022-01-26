@@ -61,7 +61,7 @@ export default function Movies() {
   const handleDebounce = debounce(handleChange, 500);
 
   const { id: userId } = supabaseClient.auth.user();
-
+  console.log(process.env.NODE_ENV);
   return (
     <Layout
       leftButtons={
@@ -122,11 +122,19 @@ export default function Movies() {
             Send the link below to invite them:
             <br />
             <a
-              href={`http://localhost:3000/invite/group?id=${toBase64(
+              href={`${
+                process.env.NODE_ENV === "development"
+                  ? "http://localhost:3000"
+                  : "https://movie-reviewer.vercel.app"
+              }/invite/group?id=${toBase64(
                 groupId as string
               )}&user_id=${userId}`}
               style={{ color: "lightblue" }}
-            >{`http://localhost:3000/invite/group?id=${toBase64(
+            >{`${
+              process.env.NODE_ENV === "development"
+                ? "http://localhost:3000"
+                : "https://movie-reviewer.vercel.app"
+            }/invite/group?id=${toBase64(
               groupId as string
             )}&user_id=${userId}`}</a>
           </SmallText>
